@@ -3,12 +3,12 @@
 #include <vector>
 #include <set>
 
-constexpr int NUM_SIZE = 9;
-constexpr int ROW_SIZE = 9;
-constexpr int COL_SIZE = 9;
-constexpr int SQUARE_SIZE = 3;
-constexpr int SQUARE_ROW_SIZE = ROW_SIZE / SQUARE_SIZE;
-constexpr int SQUARE_COL_SIZE = COL_SIZE / SQUARE_SIZE;
+constexpr size_t NUM_SIZE = 9;
+constexpr size_t ROW_SIZE = 9;
+constexpr size_t COL_SIZE = 9;
+constexpr size_t SQUARE_SIZE = 3;
+constexpr size_t SQUARE_ROW_SIZE = ROW_SIZE / SQUARE_SIZE;
+constexpr size_t SQUARE_COL_SIZE = COL_SIZE / SQUARE_SIZE;
 
 class Sudoku
 {
@@ -20,11 +20,12 @@ public:
 
 protected:
 	virtual void InitializeConstraints();
-	virtual bool CheckOnce(const std::vector<Position>& spaces);
-	virtual bool DFS(const std::vector<Position>& spaces, size_t pos = 0);
+	virtual bool CheckOnce(const std::vector<Position> &spaces);
+	virtual bool DFS(const std::vector<Position> &spaces, size_t pos = 0);
 	virtual bool SatisfyConstraints(size_t i, size_t j, int num);
 	virtual void AddConstraints(size_t i, size_t j, int num);
 	virtual void RemoveConstraints(size_t i, size_t j, int num);
+	virtual int GetCandidateCount(size_t i, size_t j, int &TargetNum);
 
 protected:
 	std::vector<int> RowConstraints;
@@ -45,15 +46,14 @@ protected:
 	void RemoveColConstraints(size_t i, size_t j, int num);
 	void RemoveSquareConstraints(size_t i, size_t j, int num);
 
-
 private:
 	std::vector<int> Board;
 
 public:
-	int& operator()(size_t i, size_t j);
-	const int& operator()(size_t i, size_t j) const;
-	int& operator[](size_t k);
-	const int& operator[](size_t k) const;
+	int &operator()(size_t i, size_t j);
+	const int &operator()(size_t i, size_t j) const;
+	int &operator[](size_t k);
+	const int &operator[](size_t k) const;
 	friend std::istream &operator>>(std::istream &in, Sudoku &sudoku);
 	friend std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku);
 };

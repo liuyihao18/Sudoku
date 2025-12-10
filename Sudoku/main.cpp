@@ -6,7 +6,7 @@
 
 int main()
 {
-	std::filesystem::path path(R"(board2.txt)");
+	std::filesystem::path path(R"(sokudo\sokudo5.txt)");
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "Path Not Found: " << path << std::endl;
@@ -15,12 +15,13 @@ int main()
 	std::ifstream is(path);
 	Sudoku sudoku;
 	is >> sudoku;
-	std::cout << "*** 开始求解 ***" << std::endl << std::endl;
+	std::cout << "*** 开始求解 ***" << std::endl
+			  << std::endl;
 	auto start = std::chrono::system_clock::now();
 	sudoku.Solve();
 	auto end = std::chrono::system_clock::now();
 	std::cout << sudoku << std::endl;
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	std::cout << "*** 用时 " << duration << " ***" << std::endl;
+	std::cout << "*** 用时：" << duration << " ***" << std::endl;
 	return 0;
 }
