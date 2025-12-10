@@ -182,6 +182,12 @@ std::vector<Sudoku::Position> Sudoku::GetSpaces()
 			}
 		}
 	}
+#ifdef CHECK_ONCE
+	std::sort(Spaces.begin(), Spaces.end(), [this](Position p1, Position p2) {
+		int DevNull = 0;
+		return GetCandidateCount(p1.first, p1.second, DevNull) < GetCandidateCount(p2.first, p2.second, DevNull);
+		});
+#endif
 	return Spaces;
 }
 

@@ -6,7 +6,7 @@
 
 int main()
 {
-	std::filesystem::path path(R"(sokudo\sokudo5.txt)");
+	std::filesystem::path path(R"(sokudo\sokudo2.txt)");
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "Path Not Found: " << path << std::endl;
