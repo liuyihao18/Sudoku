@@ -29,5 +29,8 @@
     <ClInclude Include="sudoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="no_horse_sudoku.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

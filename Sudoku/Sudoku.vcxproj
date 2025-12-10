@@ -132,6 +132,7 @@
     <ClCompile Include="no_horse_sudoku.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="no_horse_sudoku.h" />
     <ClInclude Include="sudoku.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

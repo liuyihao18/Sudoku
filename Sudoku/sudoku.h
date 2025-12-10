@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <vector>
-#include <set>
 
 constexpr size_t NUM_SIZE = 9;
 constexpr size_t ROW_SIZE = 9;
@@ -12,9 +11,9 @@ constexpr size_t SQUARE_COL_SIZE = COL_SIZE / SQUARE_SIZE;
 
 class Sudoku
 {
+public:
 	using Position = std::pair<size_t, size_t>;
 
-public:
 	Sudoku();
 	bool Solve();
 
