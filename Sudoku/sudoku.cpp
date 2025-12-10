@@ -19,13 +19,6 @@ bool Sudoku::Solve()
 {
 	InitializeConstraints();
 	bool answer = true;
-#ifdef CHECK_ONCE
-	if (!CheckOnce(GetSpaces()))
-	{
-		answer = false;
-		std::cerr << "*** 数独无解 ***" << std::endl;
-	}
-#endif
 	if (!DFS(GetSpaces()))
 	{
 		answer = false;
@@ -159,14 +152,6 @@ int Sudoku::GetCandidateCount(size_t i, size_t j, int &TargetNum)
 		}
 	}
 	return Count;
-}
-
-inline size_t Sudoku::SquareK(size_t i, size_t j) const
-{
-	size_t SquareI = i / SQUARE_SIZE;
-	size_t SquareJ = j / SQUARE_SIZE;
-	size_t SquareK = SquareI * SQUARE_COL_SIZE + SquareJ;
-	return SquareK;
 }
 
 std::vector<Sudoku::Position> Sudoku::GetSpaces()

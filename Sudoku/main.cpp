@@ -11,7 +11,7 @@ enum class SudokuType
 	NoHorse = 2
 };
 
-static Sudoku GetSudoku(std::istream &in)
+static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 {
 	int type = 0;
 	in >> type;
@@ -19,15 +19,15 @@ static Sudoku GetSudoku(std::istream &in)
 	{
 	case SudokuType::Standard:
 	{
-		Sudoku sudoku;
-		in >> sudoku;
+		std::shared_ptr<Sudoku> sudoku = std::make_shared<Sudoku>();
+		in >> *sudoku;
 		return sudoku;
 	}
 	break;
 	case SudokuType::NoHorse:
 	{
-		NoHorseSudoku sudoku;
-		in >> sudoku;
+		std::shared_ptr<Sudoku> sudoku = std::make_shared<NoHorseSudoku>();
+		in >> *sudoku;
 		return sudoku;
 	}
 	break;
@@ -38,20 +38,20 @@ static Sudoku GetSudoku(std::istream &in)
 
 int main()
 {
-	std::filesystem::path path(R"(sokudo\sokudo2.txt)");
+	std::filesystem::path path(R"(no_horse\sokudo5.txt)");
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "Path Not Found: " << path << std::endl;
 		return -1;
 	}
 	std::ifstream is(path);
-	Sudoku sudoku = GetSudoku(is);
+	std::shared_ptr sudoku = GetSudoku(is);
 	std::cout << "*** 开始求解 ***" << std::endl
 			  << std::endl;
 	auto start = std::chrono::system_clock::now();
-	sudoku.Solve();
+	sudoku->Solve();
 	auto end = std::chrono::system_clock::now();
-	std::cout << sudoku << std::endl;
+	std::cout << *sudoku << std::endl;
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	std::cout << "*** 用时：" << duration << " ***" << std::endl;
 	return 0;
