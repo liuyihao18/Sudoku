@@ -32,17 +32,18 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 	}
 	break;
 	default:
-		throw std::runtime_error("No Support Sudoku Type!");
+		std::cerr << "No Support Sudoku Type!" << std::endl;
+		exit(1);
 	}
 }
 
 int main()
 {
-	std::filesystem::path path(R"(no_horse\sokudo5.txt)");
+	std::filesystem::path path(R"(thermometer\sokudo3.txt)");
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "Path Not Found: " << path << std::endl;
-		return -1;
+		return 1;
 	}
 	std::ifstream is(path);
 	std::shared_ptr sudoku = GetSudoku(is);
