@@ -6,32 +6,54 @@
 constexpr int NUM_SIZE = 9;
 constexpr int ROW_SIZE = 9;
 constexpr int COL_SIZE = 9;
-constexpr int INDEX_SIZE = 3;
-constexpr int ROW_INDEX = ROW_SIZE / INDEX_SIZE;
-constexpr int COL_INDEX = COL_SIZE / INDEX_SIZE;
+constexpr int SQUARE_SIZE = 3;
+constexpr int SQUARE_ROW_SIZE = ROW_SIZE / SQUARE_SIZE;
+constexpr int SQUARE_COL_SIZE = COL_SIZE / SQUARE_SIZE;
 
 class Sudoku
 {
+	using Position = std::pair<size_t, size_t>;
+
 public:
 	Sudoku();
-	int &operator()(size_t i, size_t j);
-	const int &operator()(size_t i, size_t j) const;
-	bool solve();
+	bool Solve();
 
 protected:
-	std::vector<int> _candidates;
-	virtual bool _solve(std::vector<int> &board, std::vector<int> &candidates);
-	virtual void _updateCandidates(size_t i, size_t j, int num, const std::vector<int> &board, std::vector<int> &candidates);
-	inline size_t k(size_t i, size_t j) const { return i * COL_SIZE + j; }
+	virtual void InitializeConstraints();
+	virtual bool CheckOnce(const std::vector<Position>& spaces);
+	virtual bool DFS(const std::vector<Position>& spaces, size_t pos = 0);
+	virtual bool SatisfyConstraints(size_t i, size_t j, int num);
+	virtual void AddConstraints(size_t i, size_t j, int num);
+	virtual void RemoveConstraints(size_t i, size_t j, int num);
+
+protected:
+	std::vector<int> RowConstraints;
+	std::vector<int> ColConstraints;
+	std::vector<int> SquareConstraints;
+	inline size_t K(size_t i, size_t j) const { return i * COL_SIZE + j; }
+	inline size_t I(size_t k) const { return k / COL_SIZE; }
+	inline size_t J(size_t k) const { return k % COL_SIZE; }
+	inline size_t SquareK(size_t i, size_t j) const;
+	std::vector<Position> GetSpaces();
+	bool CheckRowConstraints(size_t i, size_t j, int num);
+	bool CheckColConstraints(size_t i, size_t j, int num);
+	bool CheckSquareConstraints(size_t i, size_t j, int num);
+	void AddRowConstraints(size_t i, size_t j, int num);
+	void AddColConstraints(size_t i, size_t j, int num);
+	void AddSquareConstraints(size_t i, size_t j, int num);
+	void RemoveRowConstraints(size_t i, size_t j, int num);
+	void RemoveColConstraints(size_t i, size_t j, int num);
+	void RemoveSquareConstraints(size_t i, size_t j, int num);
+
 
 private:
-	std::vector<int> _board;
-	void _initializeCandidates();
-	bool _isOneCandidate(int candidates);
-	int _getOneCandidate(int candidates);
-	std::vector<int> _getAllCandidates(int candidates);
+	std::vector<int> Board;
 
 public:
+	int& operator()(size_t i, size_t j);
+	const int& operator()(size_t i, size_t j) const;
+	int& operator[](size_t k);
+	const int& operator[](size_t k) const;
 	friend std::istream &operator>>(std::istream &in, Sudoku &sudoku);
 	friend std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku);
 };
