@@ -34,11 +34,11 @@ void Sudoku::InitializeConstraints()
 		{
 			if (!Board[K(i, j)])
 			{
-				Constraints[K(i, j)].emplace_back(std::make_shared<std::function<bool(int)>>(
+				Constraints[K(i, j)].emplace_back(
 					[=](int Num)
 					{
 						return !RowHasNum(i, j, Num) && !ColHasNum(i, j, Num) && !SquareHasNum(i, j, Num);
-					}));
+					});
 			}
 		}
 	}
@@ -47,8 +47,8 @@ void Sudoku::InitializeConstraints()
 bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num)
 {
 	return std::ranges::all_of(Constraints[K(i, j)],
-							   [=](const std::shared_ptr<std::function<bool(int)>> &Constraint)
-							   { return (*Constraint)(Num); });
+							   [=](const std::function<bool(int)> &Constraint)
+							   { return Constraint(Num); });
 }
 
 bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)

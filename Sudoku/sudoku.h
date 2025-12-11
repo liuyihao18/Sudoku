@@ -36,7 +36,7 @@ protected:
 	std::vector<int> RowNums;
 	std::vector<int> ColNums;
 	std::vector<int> SquareNums;
-	std::vector<std::vector<std::shared_ptr<std::function<bool(int)>>>> Constraints;
+	std::vector<std::vector<std::function<bool(int)>>> Constraints;
 	size_t K(size_t i, size_t j) const { return i * COL_SIZE + j; }
 	size_t I(size_t k) const { return k / COL_SIZE; }
 	size_t J(size_t k) const { return k % COL_SIZE; }
