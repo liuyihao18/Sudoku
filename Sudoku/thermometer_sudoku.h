@@ -3,4 +3,5 @@
 
 class ThermometerSudoku : public Sudoku
 {
+	friend std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku);
 };
