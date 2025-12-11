@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 #include <vector>
+#include <functional>
 
 constexpr size_t NUM_SIZE = 9;
 constexpr size_t ROW_SIZE = 9;
@@ -18,36 +19,37 @@ public:
 	bool Solve();
 
 protected:
+	virtual void InitializeConstraints();
 	virtual bool SatisfyConstraints(size_t i, size_t j, int Num);
-	virtual void AddConstraints(size_t i, size_t j, int Num);
-	virtual void RemoveConstraints(size_t i, size_t j, int Num);
 
 protected:
-	void InitializeConstraints();
 	bool CheckOnce(const std::vector<Position> &Spaces);
 	bool DFS(const std::vector<Position> &Spaces, size_t Pos = 0);
+	void AddNum(size_t i, size_t j, int Num);
+	void RemoveNum(size_t i, size_t j);
 	int GetCandidateCount(size_t i, size_t j, int &TargetNum);
 	std::vector<Position> GetSpaces();
 	void RestorSpaces(const std::vector<Position> &Spaces, size_t Pos);
 
 protected:
 	std::vector<int> Board;
-	std::vector<int> RowConstraints;
-	std::vector<int> ColConstraints;
-	std::vector<int> SquareConstraints;
+	std::vector<int> RowNums;
+	std::vector<int> ColNums;
+	std::vector<int> SquareNums;
+	std::vector<std::vector<std::shared_ptr<std::function<bool(int)>>>> Constraints;
 	size_t K(size_t i, size_t j) const { return i * COL_SIZE + j; }
 	size_t I(size_t k) const { return k / COL_SIZE; }
 	size_t J(size_t k) const { return k % COL_SIZE; }
 	size_t SquareK(size_t i, size_t j) const { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
-	bool CheckRowConstraints(size_t i, size_t j, int Num) const { return RowConstraints[i] & (1 << Num); }
-	bool CheckColConstraints(size_t i, size_t j, int Num) const { return ColConstraints[j] & (1 << Num); }
-	bool CheckSquareConstraints(size_t i, size_t j, int Num) const { return SquareConstraints[SquareK(i, j)] & (1 << Num); }
-	void AddRowConstraints(size_t i, size_t j, int Num) { RowConstraints[i] |= (1 << Num); }
-	void AddColConstraints(size_t i, size_t j, int Num) { ColConstraints[j] |= (1 << Num); }
-	void AddSquareConstraints(size_t i, size_t j, int Num) { SquareConstraints[SquareK(i, j)] |= (1 << Num); }
-	void RemoveRowConstraints(size_t i, size_t j, int Num) { RowConstraints[i] &= ~(1 << Num); }
-	void RemoveColConstraints(size_t i, size_t j, int Num) { ColConstraints[j] &= ~(1 << Num); }
-	void RemoveSquareConstraints(size_t i, size_t j, int Num) { SquareConstraints[SquareK(i, j)] &= ~(1 << Num); }
+	bool RowHasNum(size_t i, size_t j, int Num) const { return RowNums[i] & (1 << Num); }
+	bool ColHasNum(size_t i, size_t j, int Num) const { return ColNums[j] & (1 << Num); }
+	bool SquareHasNum(size_t i, size_t j, int Num) const { return SquareNums[SquareK(i, j)] & (1 << Num); }
+	void AddRowNum(size_t i, size_t j, int Num) { RowNums[i] |= (1 << Num); }
+	void AddColNum(size_t i, size_t j, int Num) { ColNums[j] |= (1 << Num); }
+	void AddSquareNum(size_t i, size_t j, int Num) { SquareNums[SquareK(i, j)] |= (1 << Num); }
+	void RemoveRowNum(size_t i, size_t j, int Num) { RowNums[i] &= ~(1 << Num); }
+	void RemoveColNum(size_t i, size_t j, int Num) { ColNums[j] &= ~(1 << Num); }
+	void RemoveSquareNum(size_t i, size_t j, int Num) { SquareNums[SquareK(i, j)] &= ~(1 << Num); }
 
 public:
 	int &operator()(size_t i, size_t j) { return Board[K(i, j)]; }
