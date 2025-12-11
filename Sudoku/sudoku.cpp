@@ -1,8 +1,6 @@
 ﻿#include "sudoku.h"
 #include <algorithm>
 
-#define CHECK_ONCE
-
 static_assert(ROW_SIZE == NUM_SIZE);
 static_assert(COL_SIZE == NUM_SIZE);
 static_assert(ROW_SIZE == SQUARE_SIZE * SQUARE_ROW_SIZE);
@@ -18,13 +16,12 @@ Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE, 0),
 bool Sudoku::Solve()
 {
 	InitializeConstraints();
-	bool answer = true;
-	if (!DFS(GetSpaces()))
+	if (!CheckOnce(GetSpaces()) || !DFS(GetSpaces()))
 	{
-		answer = false;
 		std::cerr << "*** 数独无解 ***" << std::endl;
+		return false;
 	}
-	return answer;
+	return true;
 }
 
 void Sudoku::InitializeConstraints()
@@ -41,12 +38,13 @@ void Sudoku::InitializeConstraints()
 	}
 }
 
-bool Sudoku::CheckOnce(const std::vector<Position> &spaces)
+bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
 {
-	while (true)
+	bool Update = true;
+	while (Update)
 	{
-		bool Update = false;
-		for (auto &&[i, j] : spaces)
+		Update = false;
+		for (auto &&[i, j] : Spaces)
 		{
 			if (Board[K(i, j)])
 			{
@@ -65,31 +63,21 @@ bool Sudoku::CheckOnce(const std::vector<Position> &spaces)
 				return false;
 			}
 		}
-		if (!Update)
-		{
-			break;
-		}
 	}
 	return true;
 }
 
-bool Sudoku::DFS(const std::vector<Position> &spaces, size_t pos)
+bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos)
 {
-	if (pos == spaces.size())
+	if (pos == Spaces.size())
 	{
 		return true;
 	}
-	auto &&[i, j] = spaces[pos];
-#ifdef CHECK_ONCE
-	if (!CheckOnce(spaces))
-	{
-		return false;
-	}
+	auto &&[i, j] = Spaces[pos];
 	if (Board[K(i, j)])
 	{
-		return DFS(spaces, pos + 1);
+		return DFS(Spaces, pos + 1);
 	}
-#endif
 	for (int Num = 1; Num <= NUM_SIZE; Num++)
 	{
 		if (!SatisfyConstraints(i, j, Num))
@@ -98,46 +86,32 @@ bool Sudoku::DFS(const std::vector<Position> &spaces, size_t pos)
 		}
 		Board[K(i, j)] = Num;
 		AddConstraints(i, j, Board[K(i, j)]);
-		if (DFS(spaces, pos + 1))
+		if (CheckOnce(Spaces) && DFS(Spaces, pos + 1))
 		{
 			return true;
 		}
-#ifdef CHECK_ONCE
-		size_t n = spaces.size();
-		for (size_t p = pos; p < n; p++)
-		{
-			auto &&[i, j] = spaces[p];
-			if (Board[K(i, j)])
-			{
-				RemoveConstraints(i, j, Board[K(i, j)]);
-				Board[K(i, j)] = 0;
-			}
-		}
-#else
-		RemoveConstraints(i, j, Board[K(i, j)]);
-		Board[K(i, j)] = 0;
-#endif
+		RestorSpaces(Spaces, pos);
 	}
 	return false;
 }
 
-bool Sudoku::SatisfyConstraints(size_t i, size_t j, int num)
+bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num)
 {
-	return !CheckRowConstraints(i, j, num) && !CheckColConstraints(i, j, num) && !CheckSquareConstraints(i, j, num);
+	return !CheckRowConstraints(i, j, Num) && !CheckColConstraints(i, j, Num) && !CheckSquareConstraints(i, j, Num);
 }
 
-void Sudoku::AddConstraints(size_t i, size_t j, int num)
+void Sudoku::AddConstraints(size_t i, size_t j, int Num)
 {
-	AddRowConstraints(i, j, num);
-	AddColConstraints(i, j, num);
-	AddSquareConstraints(i, j, num);
+	AddRowConstraints(i, j, Num);
+	AddColConstraints(i, j, Num);
+	AddSquareConstraints(i, j, Num);
 }
 
-void Sudoku::RemoveConstraints(size_t i, size_t j, int num)
+void Sudoku::RemoveConstraints(size_t i, size_t j, int Num)
 {
-	RemoveRowConstraints(i, j, num);
-	RemoveColConstraints(i, j, num);
-	RemoveSquareConstraints(i, j, num);
+	RemoveRowConstraints(i, j, Num);
+	RemoveColConstraints(i, j, Num);
+	RemoveSquareConstraints(i, j, Num);
 }
 
 int Sudoku::GetCandidateCount(size_t i, size_t j, int &TargetNum)
@@ -167,78 +141,25 @@ std::vector<Sudoku::Position> Sudoku::GetSpaces()
 			}
 		}
 	}
-#ifdef CHECK_ONCE
 	std::sort(Spaces.begin(), Spaces.end(), [this](Position p1, Position p2) {
 		int DevNull = 0;
 		return GetCandidateCount(p1.first, p1.second, DevNull) < GetCandidateCount(p2.first, p2.second, DevNull);
 		});
-#endif
 	return Spaces;
 }
 
-bool Sudoku::CheckRowConstraints(size_t i, size_t j, int num)
+void Sudoku::RestorSpaces(const std::vector<Position>& Spaces, size_t pos)
 {
-	return RowConstraints[i] & (1 << num);
-}
-
-bool Sudoku::CheckColConstraints(size_t i, size_t j, int num)
-{
-	return ColConstraints[j] & (1 << num);
-}
-
-bool Sudoku::CheckSquareConstraints(size_t i, size_t j, int num)
-{
-	return SquareConstraints[SquareK(i, j)] & (1 << num);
-}
-
-void Sudoku::AddRowConstraints(size_t i, size_t j, int num)
-{
-	RowConstraints[i] |= (1 << num);
-}
-
-void Sudoku::AddColConstraints(size_t i, size_t j, int num)
-{
-	ColConstraints[j] |= (1 << num);
-}
-
-void Sudoku::AddSquareConstraints(size_t i, size_t j, int num)
-{
-	SquareConstraints[SquareK(i, j)] |= (1 << num);
-}
-
-void Sudoku::RemoveRowConstraints(size_t i, size_t j, int num)
-{
-	RowConstraints[i] &= ~(1 << num);
-}
-
-void Sudoku::RemoveColConstraints(size_t i, size_t j, int num)
-{
-	ColConstraints[j] &= ~(1 << num);
-}
-
-void Sudoku::RemoveSquareConstraints(size_t i, size_t j, int num)
-{
-	SquareConstraints[SquareK(i, j)] &= ~(1 << num);
-}
-
-int &Sudoku::operator()(size_t i, size_t j)
-{
-	return Board[K(i, j)];
-}
-
-const int &Sudoku::operator()(size_t i, size_t j) const
-{
-	return Board[K(i, j)];
-}
-
-int &Sudoku::operator[](size_t k)
-{
-	return Board[k];
-}
-
-const int &Sudoku::operator[](size_t k) const
-{
-	return Board[k];
+	size_t n = Spaces.size();
+	for (; pos < n; pos++)
+	{
+		auto&& [i, j] = Spaces[pos];
+		if (Board[K(i, j)])
+		{
+			RemoveConstraints(i, j, Board[K(i, j)]);
+			Board[K(i, j)] = 0;
+		}
+	}
 }
 
 std::istream &operator>>(std::istream &in, Sudoku &sudoku)

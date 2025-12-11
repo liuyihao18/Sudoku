@@ -130,10 +130,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sudoku.cpp" />
     <ClCompile Include="no_horse_sudoku.cpp" />
+    <ClCompile Include="thermometer_sudoku.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="no_horse_sudoku.h" />
     <ClInclude Include="sudoku.h" />
+    <ClInclude Include="thermometer_sudoku.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

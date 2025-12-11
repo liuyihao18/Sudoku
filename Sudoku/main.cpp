@@ -1,5 +1,6 @@
 ﻿#include "sudoku.h"
 #include "no_horse_sudoku.h"
+#include "thermometer_sudoku.h"
 #include <fstream>
 #include <filesystem>
 #include <iostream>
@@ -8,7 +9,8 @@
 enum class SudokuType
 {
 	Standard = 1,
-	NoHorse = 2
+	NoHorse = 2,
+	Thermometer = 3
 };
 
 static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
@@ -26,24 +28,30 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 	break;
 	case SudokuType::NoHorse:
 	{
-		std::shared_ptr<Sudoku> sudoku = std::make_shared<NoHorseSudoku>();
+		std::shared_ptr<NoHorseSudoku> sudoku = std::make_shared<NoHorseSudoku>();
 		in >> *sudoku;
 		return sudoku;
 	}
 	break;
+	case SudokuType::Thermometer:
+	{
+		std::shared_ptr<ThermometerSudoku> sudoku = std::make_shared<ThermometerSudoku>();
+		in >> *sudoku;
+		return sudoku;
+	}
 	default:
-		std::cerr << "No Support Sudoku Type!" << std::endl;
+		std::cerr << "Not Support Sudoku Type!" << std::endl;
 		exit(1);
 	}
 }
 
 int main()
 {
-	std::filesystem::path path(R"(thermometer\sokudo3.txt)");
+	std::filesystem::path path(R"(sudoku\sudoku5.txt)");
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "Path Not Found: " << path << std::endl;
-		return 1;
+		exit(1);
 	}
 	std::ifstream is(path);
 	std::shared_ptr sudoku = GetSudoku(is);

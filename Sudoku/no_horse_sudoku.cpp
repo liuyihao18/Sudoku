@@ -10,12 +10,12 @@ constexpr const Sudoku::Position Directions[8] = {
     {-2, 1},
     {-2, -1}};
 
-bool NoHorseSudoku::SatisfyConstraints(size_t i, size_t j, int num)
+bool NoHorseSudoku::SatisfyConstraints(size_t i, size_t j, int Num)
 {
-    return Super::SatisfyConstraints(i, j, num) && !CheckHorseConstraints(i, j, num);
+    return Super::SatisfyConstraints(i, j, Num) && !CheckHorseConstraints(i, j, Num);
 }
 
-bool NoHorseSudoku::CheckHorseConstraints(size_t i, size_t j, int num)
+bool NoHorseSudoku::CheckHorseConstraints(size_t i, size_t j, int Num)
 {
     bool result = false;
     for (const Position &Direction : Directions)
@@ -26,7 +26,7 @@ bool NoHorseSudoku::CheckHorseConstraints(size_t i, size_t j, int num)
         {
             continue;
         }
-        result |= num == Board[K(newI, newJ)];
+        result |= Num == Board[K(newI, newJ)];
     }
     return result;
 }
