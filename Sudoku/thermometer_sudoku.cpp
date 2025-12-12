@@ -57,7 +57,7 @@ std::istream &operator>>(std::istream &in, ThermometerSudoku &sudoku)
      *   - x1 y1 x2 y2 x3 y3 ...
      *   - 满足 (x1, y1) < (x2, y2) < (x3, y3) < ...
      */
-    std::string line;
+    std::string line{};
     while (std::getline(in, line))
     {
         if (line.empty())
@@ -68,7 +68,7 @@ std::istream &operator>>(std::istream &in, ThermometerSudoku &sudoku)
         std::vector<Sudoku::Position> Thermometer;
         while (iss)
         {
-            Sudoku::Position p;
+            Sudoku::Position p{};
             iss >> p.first >> p.second;
             if (p.first == 0 && p.second == 0)
             {

@@ -53,7 +53,7 @@ std::istream &operator>>(std::istream &in, ContinuousSudoku &sudoku)
      *   - x1 y1 x2 y2
      *   - 满足 |Board(x1, y1) - Board(x2, y2)| = 1
      */
-    std::string line;
+    std::string line{};
     while (std::getline(in, line))
     {
         if (line.empty())
@@ -64,7 +64,7 @@ std::istream &operator>>(std::istream &in, ContinuousSudoku &sudoku)
         std::vector<Sudoku::Position> ContinuousPosition;
         while (iss)
         {
-            Sudoku::Position p;
+            Sudoku::Position p{};
             iss >> p.first >> p.second;
             if (p.first == 0 && p.second == 0)
             {
