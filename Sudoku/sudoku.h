@@ -3,12 +3,18 @@
 #include <vector>
 #include <functional>
 
-constexpr size_t NUM_SIZE = 9;
-constexpr size_t ROW_SIZE = 9;
-constexpr size_t COL_SIZE = 9;
-constexpr size_t SQUARE_SIZE = 3;
-constexpr size_t SQUARE_ROW_SIZE = ROW_SIZE / SQUARE_SIZE;
-constexpr size_t SQUARE_COL_SIZE = COL_SIZE / SQUARE_SIZE;
+constexpr size_t NUM_SIZE{9};
+constexpr size_t ROW_SIZE{9};
+constexpr size_t COL_SIZE{9};
+constexpr size_t SQUARE_SIZE{3};
+constexpr size_t SQUARE_ROW_SIZE{ROW_SIZE / SQUARE_SIZE};
+constexpr size_t SQUARE_COL_SIZE{COL_SIZE / SQUARE_SIZE};
+
+static_assert(ROW_SIZE == NUM_SIZE);
+static_assert(COL_SIZE == NUM_SIZE);
+static_assert(ROW_SIZE == SQUARE_SIZE * SQUARE_ROW_SIZE);
+static_assert(COL_SIZE == SQUARE_SIZE * SQUARE_COL_SIZE);
+static_assert(SQUARE_SIZE * SQUARE_SIZE == NUM_SIZE);
 
 class Sudoku
 {

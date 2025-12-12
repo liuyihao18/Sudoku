@@ -2,12 +2,6 @@
 #include <algorithm>
 #include <ranges>
 
-static_assert(ROW_SIZE == NUM_SIZE);
-static_assert(COL_SIZE == NUM_SIZE);
-static_assert(ROW_SIZE == SQUARE_SIZE * SQUARE_ROW_SIZE);
-static_assert(COL_SIZE == SQUARE_SIZE * SQUARE_COL_SIZE);
-static_assert(SQUARE_SIZE * SQUARE_SIZE == NUM_SIZE);
-
 Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE),
 				   RowNums(ROW_SIZE), ColNums(COL_SIZE),
 				   SquareNums(SQUARE_SIZE * SQUARE_SIZE),
@@ -32,22 +26,21 @@ void Sudoku::InitializeExtraConstraints()
 
 bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
 {
-	bool CanUpdate = true;
-	while (CanUpdate)
+	bool CheckOver{};
+	while (!CheckOver)
 	{
-		CanUpdate = false;
+		CheckOver = true;
 		for (auto &&[i, j] : Spaces)
 		{
 			if (Board[K(i, j)])
 			{
 				continue;
 			}
-			int TargetNum = 0;
-			int Count = GetCandidateCount(i, j, TargetNum);
-			if (Count == 1)
+			if (int TargetNum{}, Count{GetCandidateCount(i, j, TargetNum)};
+				Count == 1)
 			{
 				AddNum(i, j, TargetNum);
-				CanUpdate = true;
+				CheckOver = false;
 			}
 			else if (Count == 0)
 			{
@@ -64,12 +57,12 @@ bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos)
 	{
 		return true;
 	}
-	auto &&[i, j] = Spaces[pos];
+	auto &&[i, j]{Spaces[pos]};
 	if (Board[K(i, j)])
 	{
 		return DFS(Spaces, pos + 1);
 	}
-	for (int Num = 1; Num <= NUM_SIZE; Num++)
+	for (int Num{1}; Num <= NUM_SIZE; Num++)
 	{
 		if (!SatisfyConstraints(i, j, Num))
 		{
@@ -103,7 +96,7 @@ void Sudoku::AddNum(size_t i, size_t j, int Num)
 
 void Sudoku::RemoveNum(size_t i, size_t j)
 {
-	int Num = Board[K(i, j)];
+	int Num{Board[K(i, j)]};
 	RemoveRowNum(i, j, Num);
 	RemoveColNum(i, j, Num);
 	RemoveSquareNum(i, j, Num);
@@ -112,8 +105,8 @@ void Sudoku::RemoveNum(size_t i, size_t j)
 
 int Sudoku::GetCandidateCount(size_t i, size_t j, int &TargetNum)
 {
-	int Count = 0;
-	for (int Num = 1; Num <= NUM_SIZE; Num++)
+	int Count{};
+	for (int Num{1}; Num <= NUM_SIZE; Num++)
 	{
 		if (SatisfyConstraints(i, j, Num))
 		{
@@ -127,9 +120,9 @@ int Sudoku::GetCandidateCount(size_t i, size_t j, int &TargetNum)
 std::vector<Sudoku::Position> Sudoku::GetSpaces()
 {
 	std::vector<Position> Spaces;
-	for (size_t i = 0; i < ROW_SIZE; i++)
+	for (size_t i{}; i < ROW_SIZE; i++)
 	{
-		for (size_t j = 0; j < COL_SIZE; j++)
+		for (size_t j{}; j < COL_SIZE; j++)
 		{
 			if (!Board[K(i, j)])
 			{
@@ -140,7 +133,7 @@ std::vector<Sudoku::Position> Sudoku::GetSpaces()
 	std::ranges::sort(Spaces,
 					  [this](Position p1, Position p2)
 					  {
-						  int DevNull = 0;
+						  int DevNull{};
 						  return GetCandidateCount(p1.first, p1.second, DevNull) < GetCandidateCount(p2.first, p2.second, DevNull);
 					  });
 	return Spaces;
@@ -148,10 +141,10 @@ std::vector<Sudoku::Position> Sudoku::GetSpaces()
 
 void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos)
 {
-	size_t n = Spaces.size();
+	size_t n{Spaces.size()};
 	for (; pos < n; pos++)
 	{
-		auto &&[i, j] = Spaces[pos];
+		auto &&[i, j]{Spaces[pos]};
 		if (Board[K(i, j)])
 		{
 			RemoveNum(i, j);
@@ -161,11 +154,11 @@ void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos)
 
 std::istream &operator>>(std::istream &in, Sudoku &sudoku)
 {
-	for (size_t i = 0; i < ROW_SIZE; i++)
+	for (size_t i{}; i < ROW_SIZE; i++)
 	{
-		for (size_t j = 0; j < COL_SIZE; j++)
+		for (size_t j{}; j < COL_SIZE; j++)
 		{
-			int Num = 0;
+			int Num{};
 			in >> Num;
 			sudoku.AddNum(i, j, Num);
 		}
@@ -175,9 +168,9 @@ std::istream &operator>>(std::istream &in, Sudoku &sudoku)
 
 std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku)
 {
-	for (size_t i = 0; i < ROW_SIZE; i++)
+	for (size_t i{}; i < ROW_SIZE; i++)
 	{
-		for (size_t j = 0; j < COL_SIZE; j++)
+		for (size_t j{}; j < COL_SIZE; j++)
 		{
 			out << sudoku(i, j) << " ";
 		}
