@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="continuous_sudoku.cpp" />
+    <ClCompile Include="killer_sudoku.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="standard_sudoku.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="continuous_sudoku.h" />
+    <ClInclude Include="killer_sudoku.h" />
     <ClInclude Include="no_horse_sudoku.h" />
     <ClInclude Include="standard_sudoku.h" />
     <ClInclude Include="stdafx.h" />

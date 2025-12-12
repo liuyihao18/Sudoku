@@ -10,7 +10,7 @@ static void check(size_t i1, size_t j1, size_t i2, size_t j2)
     int _j2{static_cast<int>(j2)};
     if (abs(_i2 - _i1) > 1 || abs(_j2 - _j1) > 1)
     {
-        std::cerr << "- 温度计数独约束错误：(" << _i1 + 1 << ", " << _j1 + 1 << ") < (" << _i2 + 1 << ", " << _j2 + 1 << ")" << std::endl;
+        std::cerr << "- 温度计数独约束错误：(" << _i1 + 1 << ", " << _j1 + 1 << ") < (" << _i2 + 1 << ", " << _j2 + 1 << ") 不连续" << std::endl;
         exit(1);
     }
 }
@@ -81,7 +81,7 @@ std::istream &operator>>(std::istream &in, ThermometerSudoku &sudoku)
                 Thermometer.emplace_back(std::move(p));
                 continue;
             }
-            std::cerr << "- 温度计数独约束错误：(" << p.first << ", " << p.second << ")" << std::endl;
+            std::cerr << "- 温度计数独约束错误：(" << p.first << ", " << p.second << ") 孤立" << std::endl;
             exit(1);
         }
         sudoku.Thermometers.emplace_back(std::move(Thermometer));
