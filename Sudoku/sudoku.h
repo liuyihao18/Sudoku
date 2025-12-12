@@ -20,7 +20,7 @@ public:
 	bool Solve();
 
 protected:
-	virtual void InitializeConstraints();
+	virtual void InitializeExtraConstraints();
 
 protected:
 	bool CheckOnce(const std::vector<Position> &Spaces);

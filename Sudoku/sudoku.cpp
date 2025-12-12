@@ -17,7 +17,7 @@ Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE),
 
 bool Sudoku::Solve()
 {
-	InitializeConstraints();
+	InitializeExtraConstraints();
 	if (!CheckOnce(GetSpaces()) || !DFS(GetSpaces()))
 	{
 		std::cerr << "*** 数独无解 ***" << std::endl;
@@ -26,7 +26,7 @@ bool Sudoku::Solve()
 	return true;
 }
 
-void Sudoku::InitializeConstraints()
+void Sudoku::InitializeExtraConstraints()
 {
 }
 
@@ -89,7 +89,7 @@ bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num)
 {
 	return !RowHasNum(i, j, Num) && !ColHasNum(i, j, Num) && !SquareHasNum(i, j, Num) &&
 		   std::ranges::all_of(ExtraConstraints[K(i, j)],
-							   [=](const Constraint &ExtraConstraint)
+							   [Num](const Constraint &ExtraConstraint)
 							   { return ExtraConstraint(Num); });
 }
 

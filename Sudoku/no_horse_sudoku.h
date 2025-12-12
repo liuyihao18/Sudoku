@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "sudoku.h"
 
-class NoHorseSudoku : public Sudoku
+class NoHorseSudoku final : public Sudoku
 {
     using Super = Sudoku;
 
 protected:
-    virtual void InitializeConstraints() override;
+    virtual void InitializeExtraConstraints() override;
 };

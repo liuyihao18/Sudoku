@@ -10,8 +10,10 @@ constexpr const Sudoku::Position Directions[8] = {
     {-2, 1},
     {-2, -1}};
 
-void NoHorseSudoku::InitializeConstraints()
+void NoHorseSudoku::InitializeExtraConstraints()
 {
+    Super::InitializeExtraConstraints();
+
     for (size_t i = 0; i < ROW_SIZE; i++)
     {
         for (size_t j = 0; j < COL_SIZE; j++)
