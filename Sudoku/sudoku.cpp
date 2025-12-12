@@ -37,6 +37,12 @@ bool Sudoku::Solve()
     return true;
 }
 
+std::string_view Sudoku::GetName() const
+{
+    using std::string_view_literals::operator""sv;
+    return "数独"sv;
+}
+
 void Sudoku::InitializeExtraConstraints()
 {
 }
