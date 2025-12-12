@@ -18,8 +18,6 @@ std::string_view NoHorseSudoku::GetName() const
 
 void NoHorseSudoku::InitializeExtraConstraints()
 {
-    Super::InitializeExtraConstraints();
-
     for (size_t i{}; i < ROW_SIZE; i++)
     {
         for (size_t j{}; j < COL_SIZE; j++)

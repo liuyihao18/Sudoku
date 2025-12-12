@@ -23,8 +23,6 @@ std::string_view ThermometerSudoku::GetName() const
 
 void ThermometerSudoku::InitializeExtraConstraints()
 {
-    Super::InitializeExtraConstraints();
-
     for (const std::vector<Position> &Thermometer : Thermometers)
     {
         size_t n{Thermometer.size()};

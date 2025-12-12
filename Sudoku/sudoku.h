@@ -27,7 +27,7 @@ public:
     void RemoveNum(size_t i, size_t j);
     bool Solve();
 
-    virtual std::string_view GetName() const;
+    virtual std::string_view GetName() const = 0;
 
 protected:
     std::vector<std::vector<Constraint>> ExtraConstraints;

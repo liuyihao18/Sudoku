@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="continuous_sudoku.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="standard_sudoku.cpp" />
     <ClCompile Include="sudoku.cpp" />
     <ClCompile Include="no_horse_sudoku.cpp" />
     <ClCompile Include="thermometer_sudoku.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="continuous_sudoku.h" />
     <ClInclude Include="no_horse_sudoku.h" />
+    <ClInclude Include="standard_sudoku.h" />
     <ClInclude Include="sudoku.h" />
     <ClInclude Include="thermometer_sudoku.h" />
   </ItemGroup>
