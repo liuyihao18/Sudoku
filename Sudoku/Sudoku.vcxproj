@@ -134,6 +134,7 @@
     <ClCompile Include="continuous_sudoku.cpp" />
     <ClCompile Include="killer_sudoku.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="odd_even_sudoku.cpp" />
     <ClCompile Include="standard_sudoku.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -149,6 +150,7 @@
     <ClInclude Include="continuous_sudoku.h" />
     <ClInclude Include="killer_sudoku.h" />
     <ClInclude Include="no_horse_sudoku.h" />
+    <ClInclude Include="odd_even_sudoku.h" />
     <ClInclude Include="standard_sudoku.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="sudoku.h" />

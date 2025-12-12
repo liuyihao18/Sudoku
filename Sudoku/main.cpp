@@ -3,6 +3,7 @@
 #include "standard_sudoku.h"
 #include "killer_sudoku.h"
 #include "thermometer_sudoku.h"
+#include "odd_even_sudoku.h"
 #include "continuous_sudoku.h"
 #include "no_horse_sudoku.h"
 
@@ -11,6 +12,7 @@ enum class SudokuType
     Standard = 1,
     Killer = 2,
     Thermometer = 3,
+    OddEven = 4,
     Continuous = 5,
     NoHorse = 6,
 };
@@ -42,6 +44,13 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
         return sudoku;
     }
     break;
+    case SudokuType::OddEven:
+    {
+        std::shared_ptr<OddEvenSudoku> sudoku = std::make_shared<OddEvenSudoku>();
+        in >> *sudoku;
+        return sudoku;
+    }
+    break;
     case SudokuType::Continuous:
     {
         std::shared_ptr<ContinuousSudoku> sudoku = std::make_shared<ContinuousSudoku>();
@@ -64,7 +73,7 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 
 int main()
 {
-    std::filesystem::path path(R"(killer\sudoku5.txt)");
+    std::filesystem::path path(R"(odd_even\sudoku5.txt)");
     if (!std::filesystem::exists(path))
     {
         std::cerr << "Path Not Found: " << path << std::endl;
