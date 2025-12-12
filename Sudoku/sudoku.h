@@ -14,29 +14,30 @@ class Sudoku
 {
 public:
 	using Position = std::pair<size_t, size_t>;
+	using Constraint = std::function<bool(int)>;
 
 	Sudoku();
 	bool Solve();
 
 protected:
 	virtual void InitializeConstraints();
-	virtual bool SatisfyConstraints(size_t i, size_t j, int Num);
 
 protected:
 	bool CheckOnce(const std::vector<Position> &Spaces);
-	bool DFS(const std::vector<Position> &Spaces, size_t Pos = 0);
+	bool DFS(const std::vector<Position> &Spaces, size_t pos = 0);
+	bool SatisfyConstraints(size_t i, size_t j, int Num);
 	void AddNum(size_t i, size_t j, int Num);
 	void RemoveNum(size_t i, size_t j);
 	int GetCandidateCount(size_t i, size_t j, int &TargetNum);
 	std::vector<Position> GetSpaces();
-	void RestorSpaces(const std::vector<Position> &Spaces, size_t Pos);
+	void RestorSpaces(const std::vector<Position> &Spaces, size_t pos);
 
 protected:
 	std::vector<int> Board;
 	std::vector<int> RowNums;
 	std::vector<int> ColNums;
 	std::vector<int> SquareNums;
-	std::vector<std::vector<std::function<bool(int)>>> Constraints;
+	std::vector<std::vector<Constraint>> ExtraConstraints;
 	size_t K(size_t i, size_t j) const { return i * COL_SIZE + j; }
 	size_t I(size_t k) const { return k / COL_SIZE; }
 	size_t J(size_t k) const { return k % COL_SIZE; }

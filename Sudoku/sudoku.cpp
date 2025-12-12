@@ -11,7 +11,7 @@ static_assert(SQUARE_SIZE * SQUARE_SIZE == NUM_SIZE);
 Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE),
 				   RowNums(ROW_SIZE), ColNums(COL_SIZE),
 				   SquareNums(SQUARE_SIZE * SQUARE_SIZE),
-				   Constraints(ROW_SIZE * COL_SIZE)
+				   ExtraConstraints(ROW_SIZE * COL_SIZE)
 {
 }
 
@@ -28,27 +28,6 @@ bool Sudoku::Solve()
 
 void Sudoku::InitializeConstraints()
 {
-	for (size_t i = 0; i < ROW_SIZE; i++)
-	{
-		for (size_t j = 0; j < COL_SIZE; j++)
-		{
-			if (!Board[K(i, j)])
-			{
-				Constraints[K(i, j)].emplace_back(
-					[=](int Num)
-					{
-						return !RowHasNum(i, j, Num) && !ColHasNum(i, j, Num) && !SquareHasNum(i, j, Num);
-					});
-			}
-		}
-	}
-}
-
-bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num)
-{
-	return std::ranges::all_of(Constraints[K(i, j)],
-							   [=](const std::function<bool(int)> &Constraint)
-							   { return Constraint(Num); });
 }
 
 bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
@@ -104,6 +83,14 @@ bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos)
 		RestorSpaces(Spaces, pos);
 	}
 	return false;
+}
+
+bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num)
+{
+	return !RowHasNum(i, j, Num) && !ColHasNum(i, j, Num) && !SquareHasNum(i, j, Num) &&
+		   std::ranges::all_of(ExtraConstraints[K(i, j)],
+							   [=](const Constraint &ExtraConstraint)
+							   { return ExtraConstraint(Num); });
 }
 
 void Sudoku::AddNum(size_t i, size_t j, int Num)
