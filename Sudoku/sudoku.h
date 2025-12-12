@@ -1,8 +1,4 @@
 ﻿#pragma once
-#include <iostream>
-#include <vector>
-#include <functional>
-
 constexpr size_t NUM_SIZE{9};
 constexpr size_t ROW_SIZE{9};
 constexpr size_t COL_SIZE{9};

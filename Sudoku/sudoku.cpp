@@ -1,6 +1,6 @@
-﻿#include "sudoku.h"
-#include <algorithm>
-#include <ranges>
+﻿#include "stdafx.h"
+
+#include "sudoku.h"
 
 Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE),
                    RowNums(ROW_SIZE), ColNums(COL_SIZE),

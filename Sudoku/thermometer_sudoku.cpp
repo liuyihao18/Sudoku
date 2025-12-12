@@ -1,6 +1,6 @@
-﻿#include "thermometer_sudoku.h"
-#include <string>
-#include <sstream>
+﻿#include "stdafx.h"
+
+#include "thermometer_sudoku.h"
 
 static void check(size_t i1, size_t j1, size_t i2, size_t j2)
 {

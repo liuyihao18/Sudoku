@@ -1,0 +1,11 @@
+﻿#pragma once
+#include <algorithm>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <ranges>
+#include <sstream>
+#include <string>
+#include <vector>

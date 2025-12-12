@@ -1,4 +1,6 @@
-﻿#include "no_horse_sudoku.h"
+﻿#include "stdafx.h"
+
+#include "no_horse_sudoku.h"
 
 constexpr const Sudoku::Position Directions[8]{
     {1, 2},

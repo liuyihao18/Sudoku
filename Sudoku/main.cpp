@@ -1,11 +1,9 @@
-﻿#include "sudoku.h"
+﻿#include "stdafx.h"
+
 #include "standard_sudoku.h"
-#include "no_horse_sudoku.h"
 #include "thermometer_sudoku.h"
-#include <fstream>
-#include <filesystem>
-#include <iostream>
-#include <chrono>
+#include "continuous_sudoku.h"
+#include "no_horse_sudoku.h"
 
 enum class SudokuType
 {
@@ -35,6 +33,13 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
         return sudoku;
     }
     break;
+    case SudokuType::Continuous:
+    {
+        std::shared_ptr<ContinuousSudoku> sudoku = std::make_shared<ContinuousSudoku>();
+        in >> *sudoku;
+        return sudoku;
+    }
+    break;
     case SudokuType::NoHorse:
     {
         std::shared_ptr<NoHorseSudoku> sudoku = std::make_shared<NoHorseSudoku>();
@@ -50,7 +55,7 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 
 int main()
 {
-    std::filesystem::path path(R"(standard\sudoku5.txt)");
+    std::filesystem::path path(R"(continuous\sudoku1.txt)");
     if (!std::filesystem::exists(path))
     {
         std::cerr << "Path Not Found: " << path << std::endl;
