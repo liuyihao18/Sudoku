@@ -10,6 +10,12 @@ constexpr const Sudoku::Position Directions[8]{
     {-2, 1},
     {-2, -1}};
 
+std::string_view NoHorseSudoku::GetName() const
+{
+    using std::string_view_literals::operator""sv;
+    return "无马数独"sv;
+}
+
 void NoHorseSudoku::InitializeExtraConstraints()
 {
     Super::InitializeExtraConstraints();

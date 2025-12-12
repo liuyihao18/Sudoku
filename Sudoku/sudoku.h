@@ -23,31 +23,35 @@ public:
     using Constraint = std::function<bool(int)>;
 
     Sudoku();
-    bool Solve();
-
-protected:
-    virtual void InitializeExtraConstraints();
-
-protected:
-    bool CheckOnce(const std::vector<Position> &Spaces);
-    bool DFS(const std::vector<Position> &Spaces, size_t pos = 0);
-    bool SatisfyConstraints(size_t i, size_t j, int Num);
     void AddNum(size_t i, size_t j, int Num);
     void RemoveNum(size_t i, size_t j);
-    int GetCandidateCount(size_t i, size_t j, int &TargetNum);
-    std::vector<Position> GetSpaces();
+    bool Solve();
+
+    virtual std::string_view GetName() const;
+
+protected:
+    std::vector<std::vector<Constraint>> ExtraConstraints;
+    virtual void InitializeExtraConstraints();
+
+private:
+    bool SatisfyConstraints(size_t i, size_t j, int Num) const;
+    int CalculateCandidateCount(size_t i, size_t j, int &TargetNum) const;
+    std::vector<Position> FindSpaces() const;
     void RestorSpaces(const std::vector<Position> &Spaces, size_t pos);
+    bool CheckOnce(const std::vector<Position> &Spaces);
+    bool DFS(const std::vector<Position> &Spaces, size_t pos = 0);
 
 protected:
     std::vector<int> Board;
+    static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
+    static size_t I(size_t k) { return k / COL_SIZE; }
+    static size_t J(size_t k) { return k % COL_SIZE; }
+    static size_t SquareK(size_t i, size_t j) { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
+
+private:
     std::vector<int> RowNums;
     std::vector<int> ColNums;
     std::vector<int> SquareNums;
-    std::vector<std::vector<Constraint>> ExtraConstraints;
-    size_t K(size_t i, size_t j) const { return i * COL_SIZE + j; }
-    size_t I(size_t k) const { return k / COL_SIZE; }
-    size_t J(size_t k) const { return k % COL_SIZE; }
-    size_t SquareK(size_t i, size_t j) const { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
     bool RowHasNum(size_t i, size_t j, int Num) const { return RowNums[i] & (1 << Num); }
     bool ColHasNum(size_t i, size_t j, int Num) const { return ColNums[j] & (1 << Num); }
     bool SquareHasNum(size_t i, size_t j, int Num) const { return SquareNums[SquareK(i, j)] & (1 << Num); }
