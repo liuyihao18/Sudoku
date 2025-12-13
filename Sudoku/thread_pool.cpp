@@ -45,9 +45,5 @@ ThreadPool::~ThreadPool()
         Stop = true;
     }
     ConditionVariable.notify_all();
-    for (std::thread &Worker : Workers)
-    {
-        Worker.join();
-    }
     std::cout << std::endl;
 }

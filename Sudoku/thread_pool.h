@@ -9,13 +9,12 @@ public:
     ThreadPool &operator=(const ThreadPool &) = delete;
     ThreadPool &operator=(ThreadPool &&) = delete;
 
-public:
     template <typename Func, typename... Args>
     decltype(auto) AddTask(Func &&func, Args &&...args);
 
 private:
     size_t Capacity;
-    std::vector<std::thread> Workers;
+    std::vector<std::jthread> Workers;
     std::queue<std::function<void()>> Tasks;
     std::mutex Mutex;
     std::condition_variable ConditionVariable;

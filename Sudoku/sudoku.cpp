@@ -48,43 +48,6 @@ int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FB
     return Count;
 }
 
-std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState) const
-{
-    std::vector<Position> Spaces;
-    for (size_t i{}; i < ROW_SIZE; i++)
-    {
-        for (size_t j{}; j < COL_SIZE; j++)
-        {
-            if (!BoardState.Board[K(i, j)])
-            {
-                Spaces.emplace_back(i, j);
-            }
-        }
-    }
-    /*
-    std::ranges::sort(Spaces,
-                      [this, &BoardState](const Position &p1, const Position &p2)
-                      {
-                          int DevNull = 0;
-                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState);
-                      });
-    */
-    return Spaces;
-}
-
-void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState)
-{
-    size_t n{Spaces.size()};
-    for (; pos < n; pos++)
-    {
-        auto &&[i, j]{Spaces[pos]};
-        if (BoardState.Board[K(i, j)])
-        {
-            RemoveNum(i, j, BoardState);
-        }
-    }
-}
-
 bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState)
 {
     bool CheckOver{};
@@ -185,6 +148,43 @@ bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardSt
         }
     }
     return false;
+}
+
+std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState)
+{
+    std::vector<Position> Spaces;
+    for (size_t i{}; i < ROW_SIZE; i++)
+    {
+        for (size_t j{}; j < COL_SIZE; j++)
+        {
+            if (!BoardState.Board[K(i, j)])
+            {
+                Spaces.emplace_back(i, j);
+            }
+        }
+    }
+    /*
+    std::ranges::sort(Spaces,
+                      [this, &BoardState](const Position &p1, const Position &p2)
+                      {
+                          int DevNull = 0;
+                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState);
+                      });
+    */
+    return Spaces;
+}
+
+void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState)
+{
+    size_t n{Spaces.size()};
+    for (; pos < n; pos++)
+    {
+        auto &&[i, j]{Spaces[pos]};
+        if (BoardState.Board[K(i, j)])
+        {
+            RemoveNum(i, j, BoardState);
+        }
+    }
 }
 
 std::istream &operator>>(std::istream &in, Sudoku &sudoku)

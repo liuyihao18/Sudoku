@@ -3,7 +3,7 @@
 #include "common.h"
 #include "test.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc > 1)
     {
@@ -11,8 +11,8 @@ int main(int argc, char** argv)
     }
     else
     {
-        // TestAll();
-        SolveSudoku(R"(sudoku.txt)"s);
+        TestAll();
+        // SolveSudoku(R"(sudoku.txt)"s);
     }
     return 0;
 }

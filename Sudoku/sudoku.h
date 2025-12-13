@@ -48,8 +48,6 @@ protected:
 private:
     bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState) const;
     int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState) const;
-    std::vector<Position> FindSpaces(const FBoardState &BoardState) const;
-    void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
     bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState);
     bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
 
@@ -92,6 +90,8 @@ private:
         RemoveSquareNum(i, j, BoardState);
         BoardState.Board[K(i, j)] = 0;
     }
+    static std::vector<Position> FindSpaces(const FBoardState &BoardState);
+    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
 
 public:
     int &operator()(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
