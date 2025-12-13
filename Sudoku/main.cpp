@@ -6,6 +6,6 @@
 int main()
 {
     // TestAll();
-    SolveSudoku(R"(standard/sudoku.txt)"s);
+    SolveSudoku(R"(sudoku.txt)"s);
     return 0;
 }
