@@ -1,5 +1,6 @@
 {
     "code-runner.executorMapByFileExtension": {
-        ".txt": "cd $dir && Sudoku.exe $fileName"
-    }
+        ".txt": "cd $dir && .\\Sudoku.exe $fileName"
+    },
+    "code-runner.runInTerminal": true
 }
