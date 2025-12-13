@@ -39,7 +39,7 @@ bool Sudoku::Solve()
 
 std::string_view Sudoku::GetName() const
 {
-    using std::string_view_literals::operator""sv;
+    using std::operator""sv;
     return "数独"sv;
 }
 

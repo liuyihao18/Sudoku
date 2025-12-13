@@ -35,7 +35,7 @@ static void check(const std::vector<Sudoku::Position> &Positions)
 
 std::string_view KillerSudoku::GetName() const
 {
-    using std::string_view_literals::operator""sv;
+    using std::operator""sv;
     return "杀手数独"sv;
 }
 

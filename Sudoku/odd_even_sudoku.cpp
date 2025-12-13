@@ -4,7 +4,7 @@
 
 std::string_view OddEvenSudoku::GetName() const
 {
-    using std::string_view_literals::operator""sv;
+    using std::operator""sv;
     return "奇偶数独"sv;
 }
 

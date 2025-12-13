@@ -14,7 +14,7 @@ constexpr const Sudoku::Position Directions[8]{
 
 std::string_view NoHorseSudoku::GetName() const
 {
-    using std::string_view_literals::operator""sv;
+    using std::operator""sv;
     return "无马数独"sv;
 }
 
