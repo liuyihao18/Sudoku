@@ -4,7 +4,6 @@
 
 std::string_view OddEvenSudoku::GetName() const
 {
-    using std::operator""sv;
     return "奇偶数独"sv;
 }
 
@@ -63,7 +62,9 @@ std::istream &operator>>(std::istream &in, OddEvenSudoku &sudoku)
                     Positions.emplace_back(std::move(p));
                     continue;
                 }
-                std::cerr << "- 奇偶数独约束错误：(" << p.first << ", " << p.second << ") 孤立" << std::endl;
+                std::ostringstream os;
+                os << "- 奇偶数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立"sv << std::endl;
+                std::cerr << os.str();
                 exit(1);
             }
         }};

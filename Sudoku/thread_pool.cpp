@@ -24,13 +24,13 @@ ThreadPool::ThreadPool(size_t Capacity) : Capacity(Capacity), Stop(false)
                     }
 #ifdef _DEBUG
                     std::ostringstream os;
-                    os << "* Worker " << i << " Start" << std::endl;
+                    os << "* Worker "sv << i << " Start"sv << std::endl;
                     std::cout << os.str();
 #endif
                     Task();
 #ifdef _DEBUG
                     os.str("");
-                    os << "* Worker " << i << " End" << std::endl;
+                    os << "* Worker "sv << i << " End"sv << std::endl;
                     std::cout << os.str();
 #endif
                 }
