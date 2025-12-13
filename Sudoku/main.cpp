@@ -3,9 +3,16 @@
 #include "common.h"
 #include "test.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    // TestAll();
-    SolveSudoku(R"(sudoku.txt)"s);
+    if (argc > 1)
+    {
+        SolveSudoku(argv[1]);
+    }
+    else
+    {
+        // TestAll();
+        SolveSudoku(R"(sudoku.txt)"s);
+    }
     return 0;
 }
