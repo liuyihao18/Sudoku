@@ -13,7 +13,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Odd)
     {
         Constraint OddConstraint{
-            [i, j, this](int Num)
+            [this](int Num)
             {
                 return Num & 1;
             }};
@@ -22,7 +22,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Even)
     {
         Constraint EvenConstraint{
-            [i, j, this](int Num)
+            [this](int Num)
             {
                 return !(Num & 1);
             }};
