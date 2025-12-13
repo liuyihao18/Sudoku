@@ -9,7 +9,7 @@ Sudoku::Sudoku()
 bool Sudoku::Solve()
 {
     InitializeExtraConstraints();
-    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !DFS(FindSpaces(_BoardState), 0, _BoardState))
+    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !ThreadDFS(FindSpaces(_BoardState), 0, _BoardState))
     {
         std::cerr << "*** 数独无解 ***"sv << std::endl;
         return false;
