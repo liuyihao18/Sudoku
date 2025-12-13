@@ -26,7 +26,7 @@ public:
     virtual std::string_view GetName() const;
 
 protected:
-    std::vector<std::vector<Constraint>> ExtraConstraints;
+    std::array<std::vector<Constraint>, ROW_SIZE * COL_SIZE> ExtraConstraints{};
     virtual void InitializeExtraConstraints();
 
 private:
@@ -38,16 +38,16 @@ private:
     bool DFS(const std::vector<Position> &Spaces, size_t pos = 0);
 
 protected:
-    std::vector<int> Board;
+    std::array<int, ROW_SIZE * COL_SIZE> Board{};
     static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
     static size_t I(size_t k) { return k / COL_SIZE; }
     static size_t J(size_t k) { return k % COL_SIZE; }
     static size_t SquareK(size_t i, size_t j) { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
 
 private:
-    std::vector<int> RowNums;
-    std::vector<int> ColNums;
-    std::vector<int> SquareNums;
+    std::array<int, ROW_SIZE> RowNums{};
+    std::array<int, COL_SIZE> ColNums{};
+    std::array<int, SQUARE_ROW_SIZE * SQUARE_COL_SIZE> SquareNums{};
     bool RowHasNum(size_t i, size_t j, int Num) const { return RowNums[i] & (1 << Num); }
     bool ColHasNum(size_t i, size_t j, int Num) const { return ColNums[j] & (1 << Num); }
     bool SquareHasNum(size_t i, size_t j, int Num) const { return SquareNums[SquareK(i, j)] & (1 << Num); }

@@ -2,10 +2,7 @@
 
 #include "sudoku.h"
 
-Sudoku::Sudoku() : Board(ROW_SIZE * COL_SIZE),
-                   RowNums(ROW_SIZE), ColNums(COL_SIZE),
-                   SquareNums(SQUARE_SIZE * SQUARE_SIZE),
-                   ExtraConstraints(ROW_SIZE * COL_SIZE)
+Sudoku::Sudoku()
 {
 }
 
