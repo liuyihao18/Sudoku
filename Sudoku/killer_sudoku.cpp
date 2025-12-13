@@ -27,7 +27,9 @@ static void check(const std::vector<Sudoku::Position> &Positions)
         }
         if (MinDistance != 1)
         {
-            std::cerr << "- 杀手数独约束错误：(" << p1.first + 1 << ", " << p1.second + 1 << ") 不连续" << std::endl;
+            std::ostringstream os;
+            os << "- 杀手数独约束错误：("sv << p1.first + 1 << ", "sv << p1.second + 1 << ") 不连续"sv << std::endl;
+            std::cerr << os.str();
             exit(1);
         }
     }
@@ -35,7 +37,6 @@ static void check(const std::vector<Sudoku::Position> &Positions)
 
 std::string_view KillerSudoku::GetName() const
 {
-    using std::operator""sv;
     return "杀手数独"sv;
 }
 
@@ -47,7 +48,7 @@ void KillerSudoku::InitializeExtraConstraints()
         for (auto &&[i, j] : Killer.Positions)
         {
             Constraint KillerConstraint{
-                [Killer, i, j, this](int Num)
+                [Killer, i, j, this](int Num, const BoardType &Board)
                 {
                     bool HasZero{false};
                     int Temp{0};
@@ -85,8 +86,9 @@ std::istream &operator>>(std::istream &in, KillerSudoku &sudoku)
             continue;
         }
         std::istringstream iss(line);
-        Killer Killer{};
-        iss >> Killer.Sum;
+        int Sum{};
+        std::vector<Sudoku::Position> Positions;
+        iss >> Sum;
         while (iss)
         {
             Sudoku::Position p{};
@@ -99,13 +101,15 @@ std::istream &operator>>(std::istream &in, KillerSudoku &sudoku)
             {
                 p.first--;
                 p.second--;
-                Killer.Positions.emplace_back(std::move(p));
+                Positions.emplace_back(std::move(p));
                 continue;
             }
-            std::cerr << "- 杀手数独约束错误：(" << p.first << ", " << p.second << ") 孤立" << std::endl;
+            std::ostringstream os;
+            os << "- 杀手数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立"sv << std::endl;
+            std::cerr << os.str();
             exit(1);
         }
-        sudoku.Killers.emplace_back(std::move(Killer));
+        sudoku.Killers.emplace_back(Sum, std::move(Positions));
     }
     return in;
 }

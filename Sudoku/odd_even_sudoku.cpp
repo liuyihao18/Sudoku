@@ -4,7 +4,6 @@
 
 std::string_view OddEvenSudoku::GetName() const
 {
-    using std::operator""sv;
     return "奇偶数独"sv;
 }
 
@@ -13,7 +12,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Odd)
     {
         Constraint OddConstraint{
-            [this](int Num)
+            [this](int Num, const BoardType &Board)
             {
                 return Num & 1;
             }};
@@ -22,7 +21,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Even)
     {
         Constraint EvenConstraint{
-            [this](int Num)
+            [this](int Num, const BoardType &Board)
             {
                 return !(Num & 1);
             }};
@@ -63,7 +62,9 @@ std::istream &operator>>(std::istream &in, OddEvenSudoku &sudoku)
                     Positions.emplace_back(std::move(p));
                     continue;
                 }
-                std::cerr << "- 奇偶数独约束错误：(" << p.first << ", " << p.second << ") 孤立" << std::endl;
+                std::ostringstream os;
+                os << "- 奇偶数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立"sv << std::endl;
+                std::cerr << os.str();
                 exit(1);
             }
         }};

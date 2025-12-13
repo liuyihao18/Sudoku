@@ -1,93 +1,11 @@
 ﻿#include "stdafx.h"
 
-#include "standard_sudoku.h"
-#include "killer_sudoku.h"
-#include "thermometer_sudoku.h"
-#include "odd_even_sudoku.h"
-#include "continuous_sudoku.h"
-#include "no_horse_sudoku.h"
-
-enum class SudokuType
-{
-    Standard = 1,
-    Killer = 2,
-    Thermometer = 3,
-    OddEven = 4,
-    Continuous = 5,
-    NoHorse = 6,
-};
-
-static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
-{
-    int type = 0;
-    in >> type;
-    switch (SudokuType(type))
-    {
-    case SudokuType::Standard:
-    {
-        std::shared_ptr<StandardSudoku> sudoku = std::make_shared<StandardSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    case SudokuType::Killer:
-    {
-        std::shared_ptr<KillerSudoku> sudoku = std::make_shared<KillerSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    case SudokuType::Thermometer:
-    {
-        std::shared_ptr<ThermometerSudoku> sudoku = std::make_shared<ThermometerSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    case SudokuType::OddEven:
-    {
-        std::shared_ptr<OddEvenSudoku> sudoku = std::make_shared<OddEvenSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    case SudokuType::Continuous:
-    {
-        std::shared_ptr<ContinuousSudoku> sudoku = std::make_shared<ContinuousSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    case SudokuType::NoHorse:
-    {
-        std::shared_ptr<NoHorseSudoku> sudoku = std::make_shared<NoHorseSudoku>();
-        in >> *sudoku;
-        return sudoku;
-    }
-    break;
-    default:
-        std::cerr << "Not Support Sudoku Type!" << std::endl;
-        exit(1);
-    }
-}
+#include "common.h"
+#include "test.h"
 
 int main()
 {
-    std::filesystem::path path(R"(standard\sudoku5.txt)");
-    if (!std::filesystem::exists(path))
-    {
-        std::cerr << "Path Not Found: " << path << std::endl;
-        exit(1);
-    }
-    std::ifstream is(path);
-    std::shared_ptr sudoku = GetSudoku(is);
-    std::cout << "*** 开始求解 ***" << std::endl
-              << std::endl;
-    auto start = std::chrono::system_clock::now();
-    sudoku->Solve();
-    auto end = std::chrono::system_clock::now();
-    std::cout << *sudoku << std::endl;
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "*** 用时：" << duration << " ***" << std::endl;
+    // TestAll();
+    SolveSudoku(R"(standard/sudoku.txt)"s);
     return 0;
 }

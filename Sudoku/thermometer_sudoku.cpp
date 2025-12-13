@@ -10,14 +10,15 @@ static void check(size_t i1, size_t j1, size_t i2, size_t j2)
     int _j2{static_cast<int>(j2)};
     if (abs(_i2 - _i1) > 1 || abs(_j2 - _j1) > 1)
     {
-        std::cerr << "- 温度计数独约束错误：(" << _i1 + 1 << ", " << _j1 + 1 << ") < (" << _i2 + 1 << ", " << _j2 + 1 << ") 不连续" << std::endl;
+        std::ostringstream os;
+        os << "- 温度计数独约束错误：("sv << _i1 + 1 << ", "sv << _j1 + 1 << ") < ("sv << _i2 + 1 << ", "sv << _j2 + 1 << ") 不连续"sv << std::endl;
+        std::cerr << os.str();
         exit(1);
     }
 }
 
 std::string_view ThermometerSudoku::GetName() const
 {
-    using std::operator""sv;
     return "温度计数独"sv;
 }
 
@@ -32,12 +33,12 @@ void ThermometerSudoku::InitializeExtraConstraints()
             auto &&[i2, j2]{Thermometer[m + 1]};
             check(i1, j1, i2, j2);
             Constraint ThermometerConstraint1{
-                [i2, j2, this](int Num)
+                [i2, j2, this](int Num, const BoardType &Board)
                 {
                     return !Board[K(i2, j2)] || Num < Board[K(i2, j2)];
                 }};
             Constraint ThermometerConstraint2{
-                [i1, j1, this](int Num)
+                [i1, j1, this](int Num, const BoardType &Board)
                 {
                     return !Board[K(i1, j1)] || Board[K(i1, j1)] < Num;
                 }};
@@ -81,7 +82,9 @@ std::istream &operator>>(std::istream &in, ThermometerSudoku &sudoku)
                 Thermometer.emplace_back(std::move(p));
                 continue;
             }
-            std::cerr << "- 温度计数独约束错误：(" << p.first << ", " << p.second << ") 孤立" << std::endl;
+            std::ostringstream os;
+            os << "- 温度计数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立"sv << std::endl;
+            std::cerr << os.str();
             exit(1);
         }
         sudoku.Thermometers.emplace_back(std::move(Thermometer));

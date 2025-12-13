@@ -14,7 +14,6 @@ constexpr const Sudoku::Position Directions[8]{
 
 std::string_view NoHorseSudoku::GetName() const
 {
-    using std::operator""sv;
     return "无马数独"sv;
 }
 
@@ -25,7 +24,7 @@ void NoHorseSudoku::InitializeExtraConstraints()
         for (size_t j{}; j < COL_SIZE; j++)
         {
             Constraint HorseConstraint{
-                [i, j, this](int Num)
+                [i, j, this](int Num, const BoardType &Board)
                 {
                     bool result{true};
                     for (const Position &Direction : Directions)
