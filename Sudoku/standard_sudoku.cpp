@@ -4,6 +4,5 @@
 
 std::string_view StandardSudoku::GetName() const
 {
-    using std::operator""sv;
     return "标准数独"sv;
 }

@@ -9,9 +9,9 @@ Sudoku::Sudoku()
 bool Sudoku::Solve()
 {
     InitializeExtraConstraints();
-    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !ThreadDFS(FindSpaces(_BoardState), 0, _BoardState))
+    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !DFS(FindSpaces(_BoardState), 0, _BoardState))
     {
-        std::cerr << "*** 数独无解 ***" << std::endl;
+        std::cerr << "*** 数独无解 ***"sv << std::endl;
         return false;
     }
     return true;
@@ -19,7 +19,6 @@ bool Sudoku::Solve()
 
 std::string_view Sudoku::GetName() const
 {
-    using std::operator""sv;
     return "数独"sv;
 }
 
@@ -62,6 +61,12 @@ std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState) 
             }
         }
     }
+    std::ranges::sort(Spaces,
+                      [this, &BoardState](const Position &p1, const Position &p2)
+                      {
+                          int DevNull = 0;
+                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState);
+                      });
     return Spaces;
 }
 
@@ -169,7 +174,7 @@ bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardSt
             {
                 continue;
             }
-            auto Status = Result.first.wait_for(std::chrono::milliseconds(1));
+            std::future_status Status = Result.first.wait_for(std::chrono::milliseconds(1));
             if (Status == std::future_status::ready && Result.first.get())
             {
                 BoardState = std::move(*Result.second);
@@ -197,12 +202,12 @@ std::istream &operator>>(std::istream &in, Sudoku &sudoku)
 std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku)
 {
     std::ostringstream os;
-    os << "-> " << sudoku.GetName() << std::endl;
+    os << "-> "sv << sudoku.GetName() << std::endl;
     for (size_t i{}; i < ROW_SIZE; i++)
     {
         for (size_t j{}; j < COL_SIZE; j++)
         {
-            os << sudoku(i, j) << " ";
+            os << sudoku(i, j) << " "sv;
         }
         os << std::endl;
     }

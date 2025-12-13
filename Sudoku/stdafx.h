@@ -13,3 +13,5 @@
 #include <sstream>
 #include <string>
 #include <vector>
+using std::operator""s;
+using std::operator""sv;
