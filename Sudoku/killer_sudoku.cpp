@@ -47,7 +47,7 @@ void KillerSudoku::InitializeExtraConstraints()
         for (auto &&[i, j] : Killer.Positions)
         {
             Constraint KillerConstraint{
-                [Killer, i, j, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
+                [Killer, i, j, this](int Num, const BoardType &Board)
                 {
                     bool HasZero{false};
                     int Temp{0};

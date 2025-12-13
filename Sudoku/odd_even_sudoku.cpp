@@ -13,7 +13,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Odd)
     {
         Constraint OddConstraint{
-            [this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
+            [this](int Num, const BoardType &Board)
             {
                 return Num & 1;
             }};
@@ -22,7 +22,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
     for (auto &&[i, j] : Even)
     {
         Constraint EvenConstraint{
-            [this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
+            [this](int Num, const BoardType &Board)
             {
                 return !(Num & 1);
             }};

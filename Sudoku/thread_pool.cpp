@@ -22,9 +22,17 @@ ThreadPool::ThreadPool(size_t Capacity) : Capacity(Capacity), Stop(false)
                         Task = std::move(Tasks.front());
                         Tasks.pop();
                     }
-                    std::cout << "--- Worker " << i << " Start ---" << std::endl;
+#ifdef _DEBUG
+                    std::ostringstream os;
+                    os << "* Worker " << i << " Start" << std::endl;
+                    std::cout << os.str();
+#endif
                     Task();
-                    std::cout << "--- Worker " << i << " End ---" << std::endl;
+#ifdef _DEBUG
+                    os.str("");
+                    os << "* Worker " << i << " End" << std::endl;
+                    std::cout << os.str();
+#endif
                 }
             });
     }
@@ -41,4 +49,5 @@ ThreadPool::~ThreadPool()
     {
         Worker.join();
     }
+    std::cout << std::endl;
 }

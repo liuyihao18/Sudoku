@@ -29,12 +29,12 @@ void ContinuousSudoku::InitializeExtraConstraints()
         auto &&[i2, j2]{ContinuousPosition[1]};
         check(i1, j1, i2, j2);
         Constraint ContinuousConstrain1{
-            [i2, j2, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
+            [i2, j2, this](int Num, const BoardType &Board)
             {
                 return !Board[K(i2, j2)] || Board[K(i2, j2)] - Num == 1 || Num - Board[K(i2, j2)] == 1;
             }};
         Constraint ContinuousConstraint2{
-            [i1, j1, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
+            [i1, j1, this](int Num, const BoardType &Board)
             {
                 return !Board[K(i1, j1)] || Board[K(i1, j1)] - Num == 1 || Num - Board[K(i1, j1)] == 1;
             }};

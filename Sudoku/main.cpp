@@ -73,7 +73,7 @@ static std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
 
 int main()
 {
-    std::filesystem::path path(R"(standard\sudoku5.txt)");
+    std::filesystem::path path(R"(standard\sudoku.txt)");
     if (!std::filesystem::exists(path))
     {
         std::cerr << "Path Not Found: " << path << std::endl;
