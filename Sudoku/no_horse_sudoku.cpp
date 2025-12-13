@@ -25,7 +25,7 @@ void NoHorseSudoku::InitializeExtraConstraints()
         for (size_t j{}; j < COL_SIZE; j++)
         {
             Constraint HorseConstraint{
-                [i, j, this](int Num)
+                [i, j, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
                 {
                     bool result{true};
                     for (const Position &Direction : Directions)

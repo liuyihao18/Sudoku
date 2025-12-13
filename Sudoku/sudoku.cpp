@@ -6,27 +6,10 @@ Sudoku::Sudoku()
 {
 }
 
-void Sudoku::AddNum(size_t i, size_t j, int Num)
-{
-    Board[K(i, j)] = Num;
-    AddRowNum(i, j, Num);
-    AddColNum(i, j, Num);
-    AddSquareNum(i, j, Num);
-}
-
-void Sudoku::RemoveNum(size_t i, size_t j)
-{
-    int Num{Board[K(i, j)]};
-    RemoveRowNum(i, j, Num);
-    RemoveColNum(i, j, Num);
-    RemoveSquareNum(i, j, Num);
-    Board[K(i, j)] = 0;
-}
-
 bool Sudoku::Solve()
 {
     InitializeExtraConstraints();
-    if (!CheckOnce(FindSpaces()) || !DFS(FindSpaces()))
+    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !DFS(FindSpaces(_BoardState), 0, _BoardState))
     {
         std::cerr << "*** 数独无解 ***" << std::endl;
         return false;
@@ -44,20 +27,20 @@ void Sudoku::InitializeExtraConstraints()
 {
 }
 
-bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num) const
+bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num, const BoardState& BoardState) const
 {
-    return !RowHasNum(i, j, Num) && !ColHasNum(i, j, Num) && !SquareHasNum(i, j, Num) &&
+    return !HasNum(i, j, Num, BoardState) &&
            std::ranges::all_of(ExtraConstraints[K(i, j)],
-                               [Num](const Constraint &ExtraConstraint)
-                               { return ExtraConstraint(Num); });
+                               [Num, &BoardState](const Constraint &ExtraConstraint)
+                               { return ExtraConstraint(Num, BoardState.Board); });
 }
 
-int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum) const
+int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const BoardState& BoardState) const
 {
     int Count{};
     for (int Num{1}; Num <= NUM_SIZE; Num++)
     {
-        if (SatisfyConstraints(i, j, Num))
+        if (SatisfyConstraints(i, j, Num, BoardState))
         {
             Count++;
             TargetNum = Num;
@@ -66,42 +49,42 @@ int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum) const
     return Count;
 }
 
-std::vector<Sudoku::Position> Sudoku::FindSpaces() const
+std::vector<Sudoku::Position> Sudoku::FindSpaces(const BoardState& BoardState) const
 {
     std::vector<Position> Spaces;
     for (size_t i{}; i < ROW_SIZE; i++)
     {
         for (size_t j{}; j < COL_SIZE; j++)
         {
-            if (!Board[K(i, j)])
+            if (!BoardState.Board[K(i, j)])
             {
                 Spaces.emplace_back(i, j);
             }
         }
     }
     std::ranges::sort(Spaces,
-                      [this](Position p1, Position p2)
+                      [this, &BoardState](Position p1, Position p2)
                       {
                           int DevNull{};
-                          return CalculateCandidateCount(p1.first, p1.second, DevNull) < CalculateCandidateCount(p2.first, p2.second, DevNull);
+                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState);
                       });
     return Spaces;
 }
 
-void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos)
+void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos, BoardState& BoardState)
 {
     size_t n{Spaces.size()};
     for (; pos < n; pos++)
     {
         auto &&[i, j]{Spaces[pos]};
-        if (Board[K(i, j)])
+        if (BoardState.Board[K(i, j)])
         {
-            RemoveNum(i, j);
+            RemoveNum(i, j, BoardState);
         }
     }
 }
 
-bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
+bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, BoardState& BoardState)
 {
     bool CheckOver{};
     while (!CheckOver)
@@ -109,14 +92,14 @@ bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
         CheckOver = true;
         for (auto &&[i, j] : Spaces)
         {
-            if (Board[K(i, j)])
+            if (BoardState.Board[K(i, j)])
             {
                 continue;
             }
-            if (int TargetNum{}, Count{CalculateCandidateCount(i, j, TargetNum)};
+            if (int TargetNum{}, Count{CalculateCandidateCount(i, j, TargetNum, BoardState)};
                 Count == 1)
             {
-                AddNum(i, j, TargetNum);
+                AddNum(i, j, TargetNum, BoardState);
                 CheckOver = false;
             }
             else if (Count == 0)
@@ -128,29 +111,29 @@ bool Sudoku::CheckOnce(const std::vector<Position> &Spaces)
     return true;
 }
 
-bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos)
+bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, BoardState& BoardState)
 {
     if (pos == Spaces.size())
     {
         return true;
     }
     auto &&[i, j]{Spaces[pos]};
-    if (Board[K(i, j)])
+    if (BoardState.Board[K(i, j)])
     {
-        return DFS(Spaces, pos + 1);
+        return DFS(Spaces, pos + 1, BoardState);
     }
     for (int Num{1}; Num <= NUM_SIZE; Num++)
     {
-        if (!SatisfyConstraints(i, j, Num))
+        if (!SatisfyConstraints(i, j, Num, BoardState))
         {
             continue;
         }
-        AddNum(i, j, Num);
-        if (CheckOnce(Spaces) && DFS(Spaces, pos + 1))
+        AddNum(i, j, Num, BoardState);
+        if (CheckOnce(Spaces, BoardState) && DFS(Spaces, pos + 1, BoardState))
         {
             return true;
         }
-        RestorSpaces(Spaces, pos);
+        RestorSpaces(Spaces, pos, BoardState);
     }
     return false;
 }

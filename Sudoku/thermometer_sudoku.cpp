@@ -32,12 +32,12 @@ void ThermometerSudoku::InitializeExtraConstraints()
             auto &&[i2, j2]{Thermometer[m + 1]};
             check(i1, j1, i2, j2);
             Constraint ThermometerConstraint1{
-                [i2, j2, this](int Num)
+                [i2, j2, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
                 {
                     return !Board[K(i2, j2)] || Num < Board[K(i2, j2)];
                 }};
             Constraint ThermometerConstraint2{
-                [i1, j1, this](int Num)
+                [i1, j1, this](int Num, const std::array<int, ROW_SIZE * COL_SIZE> &Board)
                 {
                     return !Board[K(i1, j1)] || Board[K(i1, j1)] < Num;
                 }};

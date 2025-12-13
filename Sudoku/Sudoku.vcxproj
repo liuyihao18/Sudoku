@@ -145,6 +145,7 @@
     <ClCompile Include="sudoku.cpp" />
     <ClCompile Include="no_horse_sudoku.cpp" />
     <ClCompile Include="thermometer_sudoku.cpp" />
+    <ClCompile Include="thread_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="continuous_sudoku.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="sudoku.h" />
     <ClInclude Include="thermometer_sudoku.h" />
+    <ClInclude Include="thread_pool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
