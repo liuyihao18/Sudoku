@@ -33,6 +33,7 @@ public:
     using BoardType = FBoardState::BoardType;
     using Position = std::pair<size_t, size_t>;
     using Constraint = std::function<bool(int, const BoardType &)>;
+    using ExtraConstraintsType = std::array<std::vector<Constraint>, BOARD_SIZE>;
 
     Sudoku();
     void AddNum(size_t i, size_t j, int Num) { AddNum(i, j, Num, _BoardState); }
@@ -42,18 +43,17 @@ public:
     virtual std::string_view GetName() const;
 
 protected:
-    std::array<std::vector<Constraint>, BOARD_SIZE> ExtraConstraints{};
+    std::shared_ptr<ExtraConstraintsType> ExtraConstraints{};
     virtual void InitializeExtraConstraints();
 
 private:
-    bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState) const;
-    int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState) const;
-    bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState);
-    bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
-
-private:
-    ThreadPool _ThreadPool{8};
-    bool ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
+    static bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
+    static int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
+    static bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
+    static bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
+    static bool ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
+    static std::vector<Position> FindSpaces(const FBoardState& BoardState);
+    static void RestorSpaces(const std::vector<Position>& Spaces, size_t pos, FBoardState& BoardState);
 
 protected:
     static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
@@ -90,8 +90,6 @@ private:
         RemoveSquareNum(i, j, BoardState);
         BoardState.Board[K(i, j)] = 0;
     }
-    static std::vector<Position> FindSpaces(const FBoardState &BoardState);
-    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
 
 public:
     int &operator()(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }

@@ -16,7 +16,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
             {
                 return Num & 1;
             }};
-        ExtraConstraints[K(i, j)].emplace_back(std::move(OddConstraint));
+        (*ExtraConstraints)[K(i, j)].emplace_back(std::move(OddConstraint));
     }
     for (auto &&[i, j] : Even)
     {
@@ -25,7 +25,7 @@ void OddEvenSudoku::InitializeExtraConstraints()
             {
                 return !(Num & 1);
             }};
-        ExtraConstraints[K(i, j)].emplace_back(std::move(EvenConstraint));
+        (*ExtraConstraints)[K(i, j)].emplace_back(std::move(EvenConstraint));
     }
 }
 

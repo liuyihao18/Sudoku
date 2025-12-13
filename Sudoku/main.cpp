@@ -12,7 +12,6 @@ int main(int argc, char **argv)
     else
     {
         TestAll();
-        // SolveSudoku(R"(sudoku.txt)"s);
     }
     return 0;
 }

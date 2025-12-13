@@ -39,8 +39,8 @@ void ContinuousSudoku::InitializeExtraConstraints()
             {
                 return !Board[K(i1, j1)] || Board[K(i1, j1)] - Num == 1 || Num - Board[K(i1, j1)] == 1;
             }};
-        ExtraConstraints[K(i1, j1)].emplace_back(std::move(ContinuousConstrain1));
-        ExtraConstraints[K(i2, j2)].emplace_back(std::move(ContinuousConstraint2));
+        (*ExtraConstraints)[K(i1, j1)].emplace_back(std::move(ContinuousConstrain1));
+        (*ExtraConstraints)[K(i2, j2)].emplace_back(std::move(ContinuousConstraint2));
     }
 }
 

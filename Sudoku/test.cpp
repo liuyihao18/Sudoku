@@ -71,10 +71,19 @@ void TestNoHorseSudokus()
 
 void TestAll()
 {
+    auto Start = std::chrono::system_clock::now();
+    std::cout << "*** 开始批量测试 ***"sv << std::endl
+              << std::endl;
+
     TestStandardSudokus();
     TestKillerSudokus();
     TestThermometerSudokus();
     TestOddEvenSudokus();
     TestContinuousSudokus();
     TestNoHorseSudokus();
+
+    auto End = std::chrono::system_clock::now();
+    auto Duration = std::chrono::duration_cast<std::chrono::milliseconds>(End - Start);
+    std::cout << std::endl
+              << "*** 总用时："sv << Duration << " ***"sv << std::endl;
 }

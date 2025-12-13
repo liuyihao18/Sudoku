@@ -2,8 +2,12 @@
 class ThreadPool
 {
 public:
-    ThreadPool(size_t Capacity);
-    ~ThreadPool();
+    static ThreadPool &GetInstance()
+    {
+        static ThreadPool ThreadPool{8};
+        return ThreadPool;
+    }
+
     ThreadPool(const ThreadPool &) = delete;
     ThreadPool(ThreadPool &&) = delete;
     ThreadPool &operator=(const ThreadPool &) = delete;
@@ -11,6 +15,10 @@ public:
 
     template <typename Func, typename... Args>
     decltype(auto) AddTask(Func &&func, Args &&...args);
+
+private:
+    ThreadPool(size_t Capacity);
+    ~ThreadPool();
 
 private:
     size_t Capacity;

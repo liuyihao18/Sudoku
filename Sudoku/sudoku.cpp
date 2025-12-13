@@ -4,12 +4,13 @@
 
 Sudoku::Sudoku()
 {
+    ExtraConstraints = std::make_shared<std::array<std::vector<Constraint>, BOARD_SIZE>>();
 }
 
 bool Sudoku::Solve()
 {
     InitializeExtraConstraints();
-    if (!CheckOnce(FindSpaces(_BoardState), _BoardState) || !ThreadDFS(FindSpaces(_BoardState), 0, _BoardState))
+    if (!CheckOnce(FindSpaces(_BoardState), _BoardState, ExtraConstraints) || !ThreadDFS(FindSpaces(_BoardState), 0, _BoardState, ExtraConstraints))
     {
         std::cerr << "*** 数独无解 ***"sv << std::endl;
         return false;
@@ -26,20 +27,20 @@ void Sudoku::InitializeExtraConstraints()
 {
 }
 
-bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState) const
+bool Sudoku::SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints)
 {
     return !HasNum(i, j, Num, BoardState) &&
-           std::ranges::all_of(ExtraConstraints[K(i, j)],
+           std::ranges::all_of((*ExtraConstraints)[K(i, j)],
                                [Num, &BoardState](const Constraint &ExtraConstraint)
                                { return ExtraConstraint(Num, BoardState.Board); });
 }
 
-int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState) const
+int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints)
 {
     int Count{};
     for (int Num{1}; Num <= NUM_SIZE; Num++)
     {
-        if (SatisfyConstraints(i, j, Num, BoardState))
+        if (SatisfyConstraints(i, j, Num, BoardState, ExtraConstraints))
         {
             Count++;
             TargetNum = Num;
@@ -48,7 +49,7 @@ int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FB
     return Count;
 }
 
-bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState)
+bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints)
 {
     bool CheckOver{};
     while (!CheckOver)
@@ -60,7 +61,7 @@ bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardSt
             {
                 continue;
             }
-            if (int TargetNum{}, Count{CalculateCandidateCount(i, j, TargetNum, BoardState)};
+            if (int TargetNum{}, Count{CalculateCandidateCount(i, j, TargetNum, BoardState, ExtraConstraints)};
                 Count == 1)
             {
                 AddNum(i, j, TargetNum, BoardState);
@@ -75,7 +76,7 @@ bool Sudoku::CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardSt
     return true;
 }
 
-bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState)
+bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints)
 {
     if (pos == Spaces.size())
     {
@@ -84,16 +85,16 @@ bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &B
     auto &&[i, j]{Spaces[pos]};
     if (BoardState.Board[K(i, j)])
     {
-        return DFS(Spaces, pos + 1, BoardState);
+        return DFS(Spaces, pos + 1, BoardState, ExtraConstraints);
     }
     for (int Num{1}; Num <= NUM_SIZE; Num++)
     {
-        if (!SatisfyConstraints(i, j, Num, BoardState))
+        if (!SatisfyConstraints(i, j, Num, BoardState, ExtraConstraints))
         {
             continue;
         }
         AddNum(i, j, Num, BoardState);
-        if (CheckOnce(Spaces, BoardState) && DFS(Spaces, pos + 1, BoardState))
+        if (CheckOnce(Spaces, BoardState, ExtraConstraints) && DFS(Spaces, pos + 1, BoardState, ExtraConstraints))
         {
             return true;
         }
@@ -102,7 +103,7 @@ bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &B
     return false;
 }
 
-bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState)
+bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints)
 {
     if (pos == Spaces.size())
     {
@@ -113,17 +114,17 @@ bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardSt
     std::vector<std::pair<std::future<bool>, std::shared_ptr<FBoardState>>> Results;
     for (int Num{1}; Num <= NUM_SIZE; Num++)
     {
-        if (!SatisfyConstraints(i, j, Num, BoardState))
+        if (!SatisfyConstraints(i, j, Num, BoardState, ExtraConstraints))
         {
             continue;
         }
         std::shared_ptr CopyState = std::make_shared<FBoardState>(BoardState);
         AddNum(i, j, Num, *CopyState);
         Results.emplace_back(
-            _ThreadPool.AddTask(
-                [CopySpaces, CopyState, this]
+            ThreadPool::GetInstance().AddTask(
+                [CopySpaces, CopyState, ExtraConstraints]
                 {
-                    return DFS(*CopySpaces, 1, *CopyState);
+                    return DFS(*CopySpaces, 1, *CopyState, ExtraConstraints);
                 }),
             CopyState);
     }
