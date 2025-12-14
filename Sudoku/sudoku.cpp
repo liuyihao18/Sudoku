@@ -10,7 +10,7 @@ Sudoku::Sudoku()
 bool Sudoku::Solve()
 {
     InitializeExtraConstraints();
-    if (!CheckOnce(FindSpaces(_BoardState), _BoardState, *_ExtraConstraints) || !ThreadDFS(FindSpaces(_BoardState), 0))
+    if (!CheckOnce(FindSpaces(_BoardState, *_ExtraConstraints), _BoardState, *_ExtraConstraints) || !ThreadDFS())
     {
         std::cerr << "*** 数独无解 ***"sv << std::endl;
         return false;
@@ -27,14 +27,15 @@ void Sudoku::InitializeExtraConstraints()
 {
 }
 
-bool Sudoku::ThreadDFS(const std::vector<Position> &Spaces, size_t pos)
+bool Sudoku::ThreadDFS()
 {
-    if (pos == Spaces.size())
+    std::vector<Position> Spaces = FindSpaces(_BoardState, *_ExtraConstraints);
+    if (Spaces.size() == 0)
     {
         return true;
     }
     auto &&[i, j] = Spaces[0];
-    std::shared_ptr CopySpaces = std::make_shared<std::vector<Position>>(Spaces);
+    std::shared_ptr CopySpaces = std::make_shared<const std::vector<Position>>(std::move(Spaces));
     std::shared_ptr CopyExtraConstraints = _ExtraConstraints;
     std::vector<std::pair<std::future<bool>, std::shared_ptr<FBoardState>>> Results;
     for (int Num{1}; Num <= NUM_SIZE; Num++)
@@ -98,7 +99,7 @@ int Sudoku::CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FB
     return Count;
 }
 
-std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState)
+std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints)
 {
     std::vector<Position> Spaces;
     for (size_t i{}; i < ROW_SIZE; i++)
@@ -113,16 +114,16 @@ std::vector<Sudoku::Position> Sudoku::FindSpaces(const FBoardState &BoardState)
     }
     /*
     std::ranges::sort(Spaces,
-                      [this, &BoardState](const Position &p1, const Position &p2)
+                      [&BoardState, &ExtraConstraints](const Position &p1, const Position &p2)
                       {
                           int DevNull = 0;
-                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState);
+                          return CalculateCandidateCount(p1.first, p1.second, DevNull, BoardState, ExtraConstraints) < CalculateCandidateCount(p2.first, p2.second, DevNull, BoardState, ExtraConstraints);
                       });
     */
     return Spaces;
 }
 
-void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState)
+void Sudoku::RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints)
 {
     size_t n{Spaces.size()};
     for (; pos < n; pos++)
@@ -184,7 +185,7 @@ bool Sudoku::DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &B
         {
             return true;
         }
-        RestorSpaces(Spaces, pos, BoardState);
+        RestorSpaces(Spaces, pos, BoardState, ExtraConstraints);
     }
     return false;
 }

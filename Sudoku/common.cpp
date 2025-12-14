@@ -58,7 +58,9 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream &in)
     }
     break;
     default:
-        std::cerr << "Not Support Sudoku Type!"sv << std::endl;
+        std::ostringstream os;
+        os << "Not Support Sudoku Type!"sv << std::endl;
+        std::cerr << os.str();
         exit(1);
     }
 }
@@ -73,25 +75,32 @@ static const std::filesystem::path LogPath{"log/"s + GetCurrentTimestamp() + ".l
 
 void SolveSudoku(const std::filesystem::path &Path)
 {
+    std::ostringstream os;
     if (!std::filesystem::exists(Path))
     {
-        std::cerr << "Path Not Found: "sv << Path << std::endl;
+        os.str(""s);
+        os << "Path Not Found: "sv << Path << std::endl;
+        std::cerr << os.str();
         exit(1);
     }
     std::ifstream Is(Path);
     std::shared_ptr<Sudoku> Sudoku = GetSudoku(Is);
-    std::cout << "文件: "sv << Path << std::endl;
+    os.str(""s);
+    os << "文件: "sv << Path << std::endl;
 #ifdef _DEBUG
-    std::cout << "模式: Debug"sv << std::endl;
+    os << "模式: Debug"sv << std::endl;
 #elif NDEBUG
-    std::cout << "模式: Release"sv << std::endl;
+    os << "模式: Release"sv << std::endl;
 #endif
+    std::cout << os.str();
     auto Start = std::chrono::system_clock::now();
     Sudoku->Solve();
     auto End = std::chrono::system_clock::now();
     auto Duration = std::chrono::duration_cast<std::chrono::milliseconds>(End - Start);
-    std::cout << "用时: "sv << Duration << std::endl
-              << std::endl;
+    os.str(""s);
+    os << "用时: "sv << Duration << std::endl
+       << std::endl;
+    std::cout << os.str();
     std::cout << *Sudoku << std::endl;
     std::ofstream Log(LogPath, std::ios::app);
     Log << "文件: "sv << Path << std::endl;

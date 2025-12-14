@@ -57,7 +57,7 @@ protected:
 
 private:
     FBoardState _BoardState{};
-    bool ThreadDFS(const std::vector<Position> &Spaces, size_t pos);
+    bool ThreadDFS();
 
 protected:
     static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
@@ -95,8 +95,8 @@ private:
     }
     static bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
     static int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static std::vector<Position> FindSpaces(const FBoardState &BoardState);
-    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
+    static std::vector<Position> FindSpaces(const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
+    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
     static bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
     static bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
 };
