@@ -2,6 +2,8 @@
 
 #include "thermometer_sudoku.h"
 
+#include "solver.h"
+
 namespace
 {
 	void Check(const size_t i1, const size_t j1, const size_t i2, const size_t j2)
@@ -24,30 +26,30 @@ std::string_view ThermometerSudoku::GetName() const
 	return "温度计数独"sv;
 }
 
-void ThermometerSudoku::InitializeExtraConstraints()
+void ThermometerSudoku::InitializeSolver(Solver& solver)
 {
-	for (const std::vector<Position>& Thermometer : Thermometers)
+	for (const std::vector<Position>& thermometer : Thermometers)
 	{
-		const size_t n{Thermometer.size()};
+		const size_t n{thermometer.size()};
 		for (size_t m{}; m + 1 < n; m++)
 		{
-			auto&& [i1, j1]{Thermometer[m]};
-			auto&& [i2, j2]{Thermometer[m + 1]};
+			auto&& [i1, j1]{thermometer[m]};
+			auto&& [i2, j2]{thermometer[m + 1]};
 			Check(i1, j1, i2, j2);
 			Constraint thermometerConstraint1{
-				[i2, j2, this](const NumType num, const BoardType& board)
+				[i2, j2, this](const NumType num, const Sudoku& sudoku)
 				{
-					return !board[K(i2, j2)] || num < board[K(i2, j2)];
+					return !sudoku(i2, j2) || num < sudoku(i2, j2);
 				}
 			};
 			Constraint thermometerConstraint2{
-				[i1, j1, this](const NumType num, const BoardType& board)
+				[i1, j1, this](const NumType num, const Sudoku& sudoku)
 				{
-					return !board[K(i1, j1)] || board[K(i1, j1)] < num;
+					return !sudoku(i1, j1) || sudoku(i1, j1) < num;
 				}
 			};
-			(*ExtraConstraints)[K(i1, j1)].emplace_back(std::move(thermometerConstraint1));
-			(*ExtraConstraints)[K(i2, j2)].emplace_back(std::move(thermometerConstraint2));
+			solver.AddConstraint(i1, j1, std::move(thermometerConstraint1));
+			solver.AddConstraint(i2, j2, std::move(thermometerConstraint2));
 		}
 	}
 }
@@ -70,10 +72,10 @@ std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku)
 			continue;
 		}
 		std::istringstream iss(line);
-		std::vector<Sudoku::Position> thermometer;
+		std::vector<Position> thermometer;
 		while (iss)
 		{
-			Sudoku::Position p{};
+			Position p{};
 			iss >> p.first >> p.second;
 			if (p.first == 0 && p.second == 0)
 			{

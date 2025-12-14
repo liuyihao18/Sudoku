@@ -8,6 +8,7 @@
 #include "odd_even_sudoku.h"
 #include "continuous_sudoku.h"
 #include "no_horse_sudoku.h"
+#include "solver.h"
 
 namespace
 {
@@ -86,6 +87,8 @@ void SolveSudoku(const std::filesystem::path& path)
 	}
 	std::ifstream is(path);
 	std::shared_ptr<Sudoku> sudoku = GetSudoku(is);
+	Solver solver;
+	sudoku->InitializeSolver(solver);
 	os.str(""s);
 	os << "文件: "sv << path << '\n';
 #ifdef _DEBUG
@@ -95,7 +98,7 @@ void SolveSudoku(const std::filesystem::path& path)
 #endif
 	std::cout << os.str();
 	auto start = std::chrono::system_clock::now();
-	sudoku->Solve();
+	solver.Solve(*sudoku);
 	auto end = std::chrono::system_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 	os.str(""s);

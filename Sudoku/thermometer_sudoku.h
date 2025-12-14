@@ -6,12 +6,11 @@ class ThermometerSudoku final : public Sudoku
 	using Super = Sudoku;
 
 public:
-	std::string_view GetName() const override;
+	[[nodiscard]] std::string_view GetName() const override;
+	void InitializeSolver(Solver& solver) override;
 
-protected:
-	std::vector<std::vector<Position>> Thermometers;
-	void InitializeExtraConstraints() override;
-
-public:
 	friend std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku);
+
+private:
+	std::vector<std::vector<Position>> Thermometers;
 };

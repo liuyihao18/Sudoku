@@ -6,13 +6,12 @@ class OddEvenSudoku final : public Sudoku
 	using Super = Sudoku;
 
 public:
-	std::string_view GetName() const override;
+	[[nodiscard]] std::string_view GetName() const override;
+	void InitializeSolver(Solver& solver) override;
 
-protected:
+	friend std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku);
+
+private:
 	std::vector<Position> Odd;
 	std::vector<Position> Even;
-	void InitializeExtraConstraints() override;
-
-public:
-	friend std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku);
 };
