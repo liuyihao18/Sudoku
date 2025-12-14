@@ -1,16 +1,17 @@
 ﻿#pragma once
 
-enum class SudokuType
+enum class SudokuType : std::uint8_t
 {
-    Standard = 1,
-    Killer = 2,
-    Thermometer = 3,
-    OddEven = 4,
-    Continuous = 5,
-    NoHorse = 6,
+	None = 0,
+	Standard = 1,
+	Killer = 2,
+	Thermometer = 3,
+	OddEven = 4,
+	Continuous = 5,
+	NoHorse = 6,
 };
 
 class Sudoku;
-std::shared_ptr<Sudoku> GetSudoku(std::istream &in);
+std::shared_ptr<Sudoku> GetSudoku(std::istream& in);
 
-void SolveSudoku(const std::filesystem::path &Path);
+void SolveSudoku(const std::filesystem::path& path);

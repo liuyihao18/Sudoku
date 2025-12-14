@@ -3,16 +3,16 @@
 
 class OddEvenSudoku final : public Sudoku
 {
-    using Super = Sudoku;
+	using Super = Sudoku;
 
 public:
-    virtual std::string_view GetName() const override;
+	std::string_view GetName() const override;
 
 protected:
-    std::vector<Position> Odd;
-    std::vector<Position> Even;
-    virtual void InitializeExtraConstraints() override;
+	std::vector<Position> Odd;
+	std::vector<Position> Even;
+	void InitializeExtraConstraints() override;
 
 public:
-    friend std::istream &operator>>(std::istream &in, OddEvenSudoku &sudoku);
+	friend std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku);
 };

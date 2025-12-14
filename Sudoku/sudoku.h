@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "thread_pool.h"
+using NumType = int32_t;
 
-constexpr size_t NUM_SIZE{9};
+constexpr NumType NUM_SIZE{9};
 constexpr size_t ROW_SIZE{9};
 constexpr size_t COL_SIZE{9};
 constexpr size_t SQUARE_SIZE{3};
@@ -18,85 +18,137 @@ static_assert(SQUARE_SIZE * SQUARE_SIZE == NUM_SIZE);
 
 struct FBoardState
 {
-    using BoardType = std::array<int, BOARD_SIZE>;
-    using Bitmap = int;
+	using BoardType = std::array<NumType, BOARD_SIZE>;
+	using Bitmap = size_t;
 
-    BoardType Board{};
-    std::array<Bitmap, ROW_SIZE> RowNums{};
-    std::array<Bitmap, COL_SIZE> ColNums{};
-    std::array<Bitmap, BOARD_SIZE> SquareNums{};
+	BoardType Board{};
+	std::array<Bitmap, ROW_SIZE> RowNumbers{};
+	std::array<Bitmap, COL_SIZE> ColNumbers{};
+	std::array<Bitmap, SQUARE_ROW_SIZE * SQUARE_COL_SIZE> SquareNumbers{};
 };
 
 class Sudoku
 {
 public:
-    using BoardType = FBoardState::BoardType;
-    using Position = std::pair<size_t, size_t>;
-    using Constraint = std::function<bool(int, const BoardType &)>;
-    using ExtraConstraintsType = std::array<std::vector<Constraint>, BOARD_SIZE>;
+	using BoardType = FBoardState::BoardType;
+	using Position = std::pair<size_t, size_t>;
+	using Constraint = std::function<bool(NumType, const BoardType&)>;
+	using ExtraConstraintsType = std::array<std::vector<Constraint>, BOARD_SIZE>;
 
-    Sudoku();
-    void AddNum(size_t i, size_t j, int Num) { AddNum(i, j, Num, _BoardState); }
-    void RemoveNum(size_t i, size_t j) { RemoveNum(i, j, _BoardState); }
-    bool Solve();
+	Sudoku();
+	virtual ~Sudoku() = default;
+	Sudoku(const Sudoku&) = default;
+	Sudoku(Sudoku&&) = default;
+	Sudoku& operator=(const Sudoku&) = default;
+	Sudoku& operator=(Sudoku&&) = default;
 
-    virtual std::string_view GetName() const;
+	void AddNum(const size_t i, const size_t j, const NumType num) { AddNum(i, j, num, BoardState); }
+	void RemoveNum(const size_t i, const size_t j) { RemoveNum(i, j, BoardState); }
+	bool Solve();
 
-    int &operator()(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
-    const int &operator()(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
-    int &operator[](size_t k) { return _BoardState.Board[k]; }
-    const int &operator[](size_t k) const { return _BoardState.Board[k]; }
-    int &Board(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
-    const int &Board(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
-    friend std::istream &operator>>(std::istream &in, Sudoku &sudoku);
-    friend std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku);
+	[[nodiscard]] virtual std::string_view GetName() const;
 
-protected:
-    std::shared_ptr<ExtraConstraintsType> _ExtraConstraints{};
-    virtual void InitializeExtraConstraints();
-
-private:
-    FBoardState _BoardState{};
-    bool ThreadDFS();
+	NumType& operator()(const size_t i, const size_t j) { return BoardState.Board[K(i, j)]; }
+	const NumType& operator()(const size_t i, const size_t j) const { return BoardState.Board[K(i, j)]; }
+	NumType& operator[](const size_t k) { return BoardState.Board[k]; }
+	const NumType& operator[](const size_t k) const { return BoardState.Board[k]; }
+	friend std::istream& operator>>(std::istream& in, Sudoku& sudoku);
+	friend std::ostream& operator<<(std::ostream& out, const Sudoku& sudoku);
 
 protected:
-    static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
-    static size_t I(size_t k) { return k / COL_SIZE; }
-    static size_t J(size_t k) { return k % COL_SIZE; }
-    static size_t SquareK(size_t i, size_t j) { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
+	std::shared_ptr<ExtraConstraintsType> ExtraConstraints{};
+	virtual void InitializeExtraConstraints();
+
+	FBoardState BoardState{};
+	bool ThreadDfs();
+
+	static size_t K(const size_t i, const size_t j) { return i * COL_SIZE + j; }
+	static size_t I(const size_t k) { return k / COL_SIZE; }
+	static size_t J(const size_t k) { return k % COL_SIZE; }
+
+	static size_t SquareK(const size_t i, const size_t j)
+	{
+		return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE;
+	}
 
 private:
-    static bool RowHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.RowNums[i] & (1 << Num); }
-    static bool ColHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.ColNums[j] & (1 << Num); }
-    static bool SquareHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.SquareNums[SquareK(i, j)] & (1 << Num); }
-    static bool HasNum(size_t i, size_t j, int Num, const FBoardState &BoardState)
-    {
-        return RowHasNum(i, j, Num, BoardState) || ColHasNum(i, j, Num, BoardState) || SquareHasNum(i, j, Num, BoardState);
-    }
-    static void AddRowNum(size_t i, size_t j, int Num, FBoardState &BoardState) { BoardState.RowNums[i] |= (1 << Num); }
-    static void AddColNum(size_t i, size_t j, int Num, FBoardState &BoardState) { BoardState.ColNums[j] |= (1 << Num); }
-    static void AddSquareNum(size_t i, size_t j, int Num, FBoardState &BoardState) { BoardState.SquareNums[SquareK(i, j)] |= (1 << Num); }
-    static void AddNum(size_t i, size_t j, int Num, FBoardState &BoardState)
-    {
-        BoardState.Board[K(i, j)] = Num;
-        AddRowNum(i, j, Num, BoardState);
-        AddColNum(i, j, Num, BoardState);
-        AddSquareNum(i, j, Num, BoardState);
-    }
-    static void RemoveRowNum(size_t i, size_t j, FBoardState &BoardState) { BoardState.RowNums[i] &= ~(1 << BoardState.Board[K(i, j)]); }
-    static void RemoveColNum(size_t i, size_t j, FBoardState &BoardState) { BoardState.ColNums[j] &= ~(1 << BoardState.Board[K(i, j)]); }
-    static void RemoveSquareNum(size_t i, size_t j, FBoardState &BoardState) { BoardState.SquareNums[SquareK(i, j)] &= ~(1 << BoardState.Board[K(i, j)]); }
-    static void RemoveNum(size_t i, size_t j, FBoardState &BoardState)
-    {
-        RemoveRowNum(i, j, BoardState);
-        RemoveColNum(i, j, BoardState);
-        RemoveSquareNum(i, j, BoardState);
-        BoardState.Board[K(i, j)] = 0;
-    }
-    static bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static std::vector<Position> FindSpaces(const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
-    static bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
+	static bool RowHasNum(const size_t i, const size_t, const NumType num, const FBoardState& boardState)
+	{
+		return boardState.RowNumbers[i] & (1z << num);
+	}
+
+	static bool ColHasNum(const size_t, const size_t j, const NumType num, const FBoardState& boardState)
+	{
+		return boardState.ColNumbers[j] & (1z << num);
+	}
+
+	static bool SquareHasNum(const size_t i, const size_t j, const NumType num, const FBoardState& boardState)
+	{
+		return boardState.SquareNumbers[SquareK(i, j)] & (1z << num);
+	}
+
+	static bool HasNum(const size_t i, const size_t j, const NumType num, const FBoardState& boardState)
+	{
+		return RowHasNum(i, j, num, boardState) || ColHasNum(i, j, num, boardState) || SquareHasNum(
+			i, j, num, boardState);
+	}
+
+	static void AddRowNum(const size_t i, const size_t, const NumType num, FBoardState& boardState)
+	{
+		boardState.RowNumbers[i] |= (1z << num);
+	}
+
+	static void AddColNum(const size_t, const size_t j, const NumType num, FBoardState& boardState)
+	{
+		boardState.ColNumbers[j] |= (1z << num);
+	}
+
+	static void AddSquareNum(const size_t i, const size_t j, const NumType num, FBoardState& boardState)
+	{
+		boardState.SquareNumbers[SquareK(i, j)] |= (1z << num);
+	}
+
+	static void AddNum(const size_t i, const size_t j, const NumType num, FBoardState& boardState)
+	{
+		boardState.Board[K(i, j)] = num;
+		AddRowNum(i, j, num, boardState);
+		AddColNum(i, j, num, boardState);
+		AddSquareNum(i, j, num, boardState);
+	}
+
+	static void RemoveRowNum(const size_t i, const size_t j, FBoardState& boardState)
+	{
+		boardState.RowNumbers[i] &= ~(1 << boardState.Board[K(i, j)]);
+	}
+
+	static void RemoveColNum(const size_t i, const size_t j, FBoardState& boardState)
+	{
+		boardState.ColNumbers[j] &= ~(1 << boardState.Board[K(i, j)]);
+	}
+
+	static void RemoveSquareNum(const size_t i, const size_t j, FBoardState& boardState)
+	{
+		boardState.SquareNumbers[SquareK(i, j)] &= ~(1 << boardState.Board[K(i, j)]);
+	}
+
+	static void RemoveNum(const size_t i, const size_t j, FBoardState& boardState)
+	{
+		RemoveRowNum(i, j, boardState);
+		RemoveColNum(i, j, boardState);
+		RemoveSquareNum(i, j, boardState);
+		boardState.Board[K(i, j)] = 0;
+	}
+
+	static bool SatisfyConstraints(size_t i, size_t j, NumType num, const FBoardState& boardState,
+	                               const ExtraConstraintsType& extraConstraints);
+	static size_t CalculateCandidateCount(size_t i, size_t j, NumType& targetNum, const FBoardState& boardState,
+	                                      const ExtraConstraintsType& extraConstraints);
+	static std::vector<Position> FindSpaces(const FBoardState& boardState,
+	                                        const ExtraConstraintsType& extraConstraints);
+	static void RestoreSpaces(const std::vector<Position>& spaces, size_t pos, FBoardState& boardState,
+	                          const ExtraConstraintsType& extraConstraints);
+	static bool CheckOnce(const std::vector<Position>& spaces, FBoardState& boardState,
+	                      const ExtraConstraintsType& extraConstraints);
+	static bool Dfs(const std::vector<Position>& spaces, size_t pos, FBoardState& boardState,
+	                const ExtraConstraintsType& extraConstraints);
 };
