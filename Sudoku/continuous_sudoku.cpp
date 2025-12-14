@@ -61,7 +61,7 @@ std::istream& operator>>(std::istream& in, ContinuousSudoku& sudoku)
 	 *   - 满足 |Board(x1, y1) - Board(x2, y2)| = 1
 	 */
 	std::string line{};
-	while (in && std::getline(in, line))
+	while (std::getline(in, line))
 	{
 		if (line.empty())
 		{

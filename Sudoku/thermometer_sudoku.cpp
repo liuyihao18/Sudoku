@@ -65,7 +65,7 @@ std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku)
 	 *   - 满足 (x1, y1) < (x2, y2) < (x3, y3) < ...
 	 */
 	std::string line{};
-	while (in && std::getline(in, line))
+	while (std::getline(in, line))
 	{
 		if (line.empty())
 		{
