@@ -86,7 +86,7 @@ std::istream& operator>>(std::istream& in, KillerSudoku& sudoku)
 	 *   - 满足 sum = Board(x1, y1) + Board(x2, y2) + ...
 	 */
 	std::string line{};
-	while (std::getline(in, line))
+	while (in && std::getline(in, line))
 	{
 		if (line.empty())
 		{

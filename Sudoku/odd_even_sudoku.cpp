@@ -46,7 +46,7 @@ std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku)
 		[&in](std::vector<Position>& positions)
 		{
 			std::string line{};
-			while (line.empty())
+			while (in && line.empty())
 			{
 				std::getline(in, line);
 			}

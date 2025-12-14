@@ -31,7 +31,7 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 	case SudokuType::None:
 		{
 			std::ostringstream os;
-			os << "Not Support Sudoku Type!\n"sv;
+			os << "不支持的数独类型!\n"sv;
 			std::cerr << os.str();
 			throw std::runtime_error(os.str());
 		}
