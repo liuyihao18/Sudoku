@@ -42,8 +42,8 @@ void ThermometerSudoku::InitializeExtraConstraints()
                 {
                     return !Board[K(i1, j1)] || Board[K(i1, j1)] < Num;
                 }};
-            (*ExtraConstraints)[K(i1, j1)].emplace_back(std::move(ThermometerConstraint1));
-            (*ExtraConstraints)[K(i2, j2)].emplace_back(std::move(ThermometerConstraint2));
+            (*_ExtraConstraints)[K(i1, j1)].emplace_back(std::move(ThermometerConstraint1));
+            (*_ExtraConstraints)[K(i2, j2)].emplace_back(std::move(ThermometerConstraint2));
         }
     }
 }

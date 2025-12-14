@@ -45,5 +45,4 @@ ThreadPool::~ThreadPool()
         Stop = true;
     }
     ConditionVariable.notify_all();
-    std::cout << std::endl;
 }

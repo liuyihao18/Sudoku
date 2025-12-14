@@ -84,6 +84,5 @@ void TestAll()
 
     auto End = std::chrono::system_clock::now();
     auto Duration = std::chrono::duration_cast<std::chrono::milliseconds>(End - Start);
-    std::cout << std::endl
-              << "*** 总用时："sv << Duration << " ***"sv << std::endl;
+    std::cout << "*** 总用时："sv << Duration << " ***"sv << std::endl;
 }

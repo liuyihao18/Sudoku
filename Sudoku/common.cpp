@@ -80,14 +80,19 @@ void SolveSudoku(const std::filesystem::path &Path)
     }
     std::ifstream Is(Path);
     std::shared_ptr<Sudoku> Sudoku = GetSudoku(Is);
-    std::cout << "*** 开始求解 ***"sv << std::endl
-              << std::endl;
+    std::cout << "文件: "sv << Path << std::endl;
+#ifdef _DEBUG
+    std::cout << "模式: Debug"sv << std::endl;
+#elif NDEBUG
+    std::cout << "模式: Release"sv << std::endl;
+#endif
     auto Start = std::chrono::system_clock::now();
     Sudoku->Solve();
     auto End = std::chrono::system_clock::now();
-    std::cout << *Sudoku << std::endl;
     auto Duration = std::chrono::duration_cast<std::chrono::milliseconds>(End - Start);
-    std::cout << "*** 用时："sv << Duration << " ***"sv << std::endl;
+    std::cout << "用时: "sv << Duration << std::endl
+              << std::endl;
+    std::cout << *Sudoku << std::endl;
     std::ofstream Log(LogPath, std::ios::app);
     Log << "文件: "sv << Path << std::endl;
 #ifdef _DEBUG
@@ -95,7 +100,7 @@ void SolveSudoku(const std::filesystem::path &Path)
 #elif NDEBUG
     Log << "模式: Release"sv << std::endl;
 #endif
-    Log << "用时: "sv << Duration << std::endl;
-    Log << std::endl
-        << *Sudoku << std::endl;
+    Log << "用时: "sv << Duration << std::endl
+        << std::endl;
+    Log << *Sudoku << std::endl;
 }

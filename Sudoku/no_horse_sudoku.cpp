@@ -39,7 +39,7 @@ void NoHorseSudoku::InitializeExtraConstraints()
                     }
                     return result;
                 }};
-            (*ExtraConstraints)[K(i, j)].emplace_back(std::move(HorseConstraint));
+            (*_ExtraConstraints)[K(i, j)].emplace_back(std::move(HorseConstraint));
         }
     }
 }

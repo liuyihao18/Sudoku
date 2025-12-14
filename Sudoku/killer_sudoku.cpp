@@ -63,7 +63,7 @@ void KillerSudoku::InitializeExtraConstraints()
                     }
                     return HasZero ? Temp + Num <= Killer.Sum : Temp + Num == Killer.Sum;
                 }};
-            (*ExtraConstraints)[K(i, j)].emplace_back(std::move(KillerConstraint));
+            (*_ExtraConstraints)[K(i, j)].emplace_back(std::move(KillerConstraint));
         }
     }
 }

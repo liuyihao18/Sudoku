@@ -42,18 +42,22 @@ public:
 
     virtual std::string_view GetName() const;
 
+    int &operator()(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
+    const int &operator()(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
+    int &operator[](size_t k) { return _BoardState.Board[k]; }
+    const int &operator[](size_t k) const { return _BoardState.Board[k]; }
+    int &Board(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
+    const int &Board(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
+    friend std::istream &operator>>(std::istream &in, Sudoku &sudoku);
+    friend std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku);
+
 protected:
-    std::shared_ptr<ExtraConstraintsType> ExtraConstraints{};
+    std::shared_ptr<ExtraConstraintsType> _ExtraConstraints{};
     virtual void InitializeExtraConstraints();
 
 private:
-    static bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
-    static int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
-    static bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
-    static bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
-    static bool ThreadDFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const std::shared_ptr<ExtraConstraintsType>& ExtraConstraints);
-    static std::vector<Position> FindSpaces(const FBoardState& BoardState);
-    static void RestorSpaces(const std::vector<Position>& Spaces, size_t pos, FBoardState& BoardState);
+    FBoardState _BoardState{};
+    bool ThreadDFS(const std::vector<Position> &Spaces, size_t pos);
 
 protected:
     static size_t K(size_t i, size_t j) { return i * COL_SIZE + j; }
@@ -62,7 +66,6 @@ protected:
     static size_t SquareK(size_t i, size_t j) { return i / SQUARE_SIZE * SQUARE_COL_SIZE + j / SQUARE_SIZE; }
 
 private:
-    FBoardState _BoardState{};
     static bool RowHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.RowNums[i] & (1 << Num); }
     static bool ColHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.ColNums[j] & (1 << Num); }
     static bool SquareHasNum(size_t i, size_t j, int Num, const FBoardState &BoardState) { return BoardState.SquareNums[SquareK(i, j)] & (1 << Num); }
@@ -90,14 +93,10 @@ private:
         RemoveSquareNum(i, j, BoardState);
         BoardState.Board[K(i, j)] = 0;
     }
-
-public:
-    int &operator()(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
-    const int &operator()(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
-    int &operator[](size_t k) { return _BoardState.Board[k]; }
-    const int &operator[](size_t k) const { return _BoardState.Board[k]; }
-    int &Board(size_t i, size_t j) { return _BoardState.Board[K(i, j)]; }
-    const int &Board(size_t i, size_t j) const { return _BoardState.Board[K(i, j)]; }
-    friend std::istream &operator>>(std::istream &in, Sudoku &sudoku);
-    friend std::ostream &operator<<(std::ostream &out, const Sudoku &sudoku);
+    static bool SatisfyConstraints(size_t i, size_t j, int Num, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
+    static int CalculateCandidateCount(size_t i, size_t j, int &TargetNum, const FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
+    static std::vector<Position> FindSpaces(const FBoardState &BoardState);
+    static void RestorSpaces(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState);
+    static bool CheckOnce(const std::vector<Position> &Spaces, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
+    static bool DFS(const std::vector<Position> &Spaces, size_t pos, FBoardState &BoardState, const ExtraConstraintsType &ExtraConstraints);
 };
