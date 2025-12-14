@@ -2,7 +2,9 @@
 
 #include "no_horse_sudoku.h"
 
-constexpr Sudoku::Position DIRECTIONS[8]{
+#include "solver.h"
+
+constexpr Position DIRECTIONS[8]{
 	{1, 2},
 	{1, -2},
 	{2, 1},
@@ -18,14 +20,14 @@ std::string_view NoHorseSudoku::GetName() const
 	return "无马数独"sv;
 }
 
-void NoHorseSudoku::InitializeExtraConstraints()
+void NoHorseSudoku::InitializeSolver(Solver& solver)
 {
 	for (size_t i{}; i < ROW_SIZE; i++)
 	{
 		for (size_t j{}; j < COL_SIZE; j++)
 		{
 			Constraint horseConstraint{
-				[i, j, this](const NumType num, const BoardType& board)
+				[i, j, this](const NumType num, const Sudoku& sudoku)
 				{
 					bool result{true};
 					for (const auto& [deltaI, deltaJ] : DIRECTIONS)
@@ -36,12 +38,12 @@ void NoHorseSudoku::InitializeExtraConstraints()
 						{
 							continue;
 						}
-						result &= num != board[K(newI, newJ)];
+						result &= num != sudoku(newI, newJ);
 					}
 					return result;
 				}
 			};
-			(*ExtraConstraints)[K(i, j)].emplace_back(std::move(horseConstraint));
+			solver.AddConstraint(i, j, std::move(horseConstraint));
 		}
 	}
 }

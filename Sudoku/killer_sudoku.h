@@ -4,7 +4,7 @@
 struct Killer
 {
 	NumType Sum{};
-	std::vector<Sudoku::Position> Positions;
+	std::vector<Position> Positions;
 };
 
 class KillerSudoku final : public Sudoku
@@ -12,12 +12,11 @@ class KillerSudoku final : public Sudoku
 	using Super = Sudoku;
 
 public:
-	std::string_view GetName() const override;
+	[[nodiscard]] std::string_view GetName() const override;
+	void InitializeSolver(Solver& solver) override;
 
-protected:
-	std::vector<Killer> Killers;
-	void InitializeExtraConstraints() override;
-
-public:
 	friend std::istream& operator>>(std::istream& in, KillerSudoku& sudoku);
+
+private:
+	std::vector<Killer> Killers;
 };

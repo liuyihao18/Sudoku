@@ -2,12 +2,14 @@
 
 #include "killer_sudoku.h"
 
+#include "solver.h"
+
 namespace
 {
-	void Check(const std::vector<Sudoku::Position>& positions)
+	void Check(const std::vector<Position>& positions)
 	{
 		auto distance{
-			[](const Sudoku::Position& p1, const Sudoku::Position& p2)
+			[](const Position& p1, const Position& p2)
 			{
 				const size_t deltaI{p1.first <= p2.first ? p2.first - p1.first : p1.first - p2.first};
 				const size_t deltaJ{p1.second <= p2.second ? p2.second - p1.second : p1.second - p2.second};
@@ -18,14 +20,14 @@ namespace
 		for (size_t i{}; i < n; i++)
 		{
 			size_t minDistance{0xffffffff};
-			Sudoku::Position p1{positions[i]};
+			Position p1{positions[i]};
 			for (size_t j{}; j < n; j++)
 			{
 				if (j == i)
 				{
 					continue;
 				}
-				Sudoku::Position p2{positions[j]};
+				Position p2{positions[j]};
 				minDistance = std::min(minDistance, distance(p1, p2));
 			}
 			if (minDistance != 1)
@@ -44,7 +46,7 @@ std::string_view KillerSudoku::GetName() const
 	return "杀手数独"sv;
 }
 
-void KillerSudoku::InitializeExtraConstraints()
+void KillerSudoku::InitializeSolver(Solver& solver)
 {
 	for (const Killer& killer : Killers)
 	{
@@ -52,7 +54,7 @@ void KillerSudoku::InitializeExtraConstraints()
 		for (auto&& [i, j] : killer.Positions)
 		{
 			Constraint killerConstraint{
-				[killer, i, j, this](const NumType num, const BoardType& board)
+				[killer, i, j, this](const NumType num, const Sudoku& sudoku)
 				{
 					bool hasZero{false};
 					NumType temp{0};
@@ -62,13 +64,13 @@ void KillerSudoku::InitializeExtraConstraints()
 						{
 							continue;
 						}
-						hasZero |= board[K(ii, jj)] == 0;
-						temp += board[K(ii, jj)];
+						hasZero |= sudoku(ii, jj) == 0;
+						temp += sudoku(ii, jj);
 					}
 					return hasZero ? temp + num <= killer.Sum : temp + num == killer.Sum;
 				}
 			};
-			(*ExtraConstraints)[K(i, j)].emplace_back(std::move(killerConstraint));
+			solver.AddConstraint(i, j, std::move(killerConstraint));
 		}
 	}
 }
@@ -84,7 +86,7 @@ std::istream& operator>>(std::istream& in, KillerSudoku& sudoku)
 	 *   - 满足 sum = Board(x1, y1) + Board(x2, y2) + ...
 	 */
 	std::string line{};
-	while (std::getline(in, line))
+	while (in && std::getline(in, line))
 	{
 		if (line.empty())
 		{
@@ -92,11 +94,11 @@ std::istream& operator>>(std::istream& in, KillerSudoku& sudoku)
 		}
 		std::istringstream iss(line);
 		NumType sum{};
-		std::vector<Sudoku::Position> positions;
+		std::vector<Position> positions;
 		iss >> sum;
 		while (iss)
 		{
-			Sudoku::Position p{};
+			Position p{};
 			iss >> p.first >> p.second;
 			if (p.first == 0 && p.second == 0)
 			{

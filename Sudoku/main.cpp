@@ -5,13 +5,20 @@
 
 int main(const int argc, char** argv)
 {
-	if (argc > 1)
+	try
 	{
-		SolveSudoku(argv[1]);
+		if (argc > 1)
+		{
+			SolveSudoku(argv[1]);
+		}
+		else
+		{
+			TestAll();
+		}
 	}
-	else
+	catch (const std::runtime_error&)
 	{
-		TestAll();
+		return -1;
 	}
 	return 0;
 }

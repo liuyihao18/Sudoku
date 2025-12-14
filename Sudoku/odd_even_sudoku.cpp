@@ -2,32 +2,34 @@
 
 #include "odd_even_sudoku.h"
 
+#include "solver.h"
+
 std::string_view OddEvenSudoku::GetName() const
 {
 	return "奇偶数独"sv;
 }
 
-void OddEvenSudoku::InitializeExtraConstraints()
+void OddEvenSudoku::InitializeSolver(Solver& solver)
 {
 	for (auto&& [i, j] : Odd)
 	{
 		Constraint oddConstraint{
-			[this](const NumType num, const BoardType&)
+			[this](const NumType num, const Sudoku&)
 			{
 				return num & 1;
 			}
 		};
-		(*ExtraConstraints)[K(i, j)].emplace_back(std::move(oddConstraint));
+		solver.AddConstraint(i, j, std::move(oddConstraint));
 	}
 	for (auto&& [i, j] : Even)
 	{
 		Constraint evenConstraint{
-			[this](const NumType num, const BoardType&)
+			[this](const NumType num, const Sudoku&)
 			{
 				return !(num & 1);
 			}
 		};
-		(*ExtraConstraints)[K(i, j)].emplace_back(std::move(evenConstraint));
+		solver.AddConstraint(i, j, std::move(evenConstraint));
 	}
 }
 
@@ -41,17 +43,17 @@ std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku)
 	 *   - 第二行为偶数位置：x1 y1 x2 y2 ...
 	 */
 	auto input{
-		[&in](std::vector<Sudoku::Position>& positions)
+		[&in](std::vector<Position>& positions)
 		{
 			std::string line{};
-			while (line.empty())
+			while (in && line.empty())
 			{
 				std::getline(in, line);
 			}
 			std::istringstream iss(line);
 			while (iss)
 			{
-				Sudoku::Position p{};
+				Position p{};
 				iss >> p.first >> p.second;
 				if (p.first == 0 && p.second == 0)
 				{
