@@ -27,7 +27,7 @@ void NoHorseSudoku::InitializeSolver(Solver& solver)
 		for (size_t j{}; j < COL_SIZE; j++)
 		{
 			Constraint horseConstraint{
-				[i, j, this](const NumType num, const Sudoku& sudoku)
+				[i, j](const NumType num, const Sudoku& sudoku)
 				{
 					bool result{true};
 					for (const auto& [deltaI, deltaJ] : DIRECTIONS)

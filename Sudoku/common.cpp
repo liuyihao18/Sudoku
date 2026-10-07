@@ -8,6 +8,7 @@
 #include "odd_even_sudoku.h"
 #include "continuous_sudoku.h"
 #include "no_horse_sudoku.h"
+#include "diagonal_sudoku.h"
 #include "solver.h"
 
 namespace
@@ -28,13 +29,6 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 	in >> type;
 	switch (static_cast<SudokuType>(type))
 	{
-	case SudokuType::None:
-		{
-			std::ostringstream os;
-			os << "不支持的数独类型!\n"sv;
-			std::cerr << os.str();
-			throw std::runtime_error(os.str());
-		}
 	case SudokuType::Standard:
 		{
 			auto sudoku = std::make_shared<StandardSudoku>();
@@ -71,8 +65,21 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 			in >> *sudoku;
 			return sudoku;
 		}
+	case SudokuType::Diagonal:
+		{
+			auto sudoku = std::make_shared<DiagonalSudoku>();
+			in >> *sudoku;
+			return sudoku;
+		}
+	case SudokuType::None:
+	default:
+		{
+			std::ostringstream os;
+			os << "不支持的数独类型!\n"sv;
+			std::cerr << os.str();
+			throw std::runtime_error(os.str());
+		}
 	}
-	return nullptr;
 }
 
 void SolveSudoku(const std::filesystem::path& path)

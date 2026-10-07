@@ -9,6 +9,7 @@ enum class SudokuType : std::uint8_t
 	OddEven = 4,
 	Continuous = 5,
 	NoHorse = 6,
+	Diagonal = 7
 };
 
 class Sudoku;

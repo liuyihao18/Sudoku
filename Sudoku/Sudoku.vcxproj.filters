@@ -54,6 +54,9 @@
     <ClCompile Include="solver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="diagonal_sudoku.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sudoku.h">
@@ -90,6 +93,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="solver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="constant.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="diagonal_sudoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

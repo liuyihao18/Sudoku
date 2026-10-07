@@ -54,7 +54,7 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 		for (auto&& [i, j] : killer.Positions)
 		{
 			Constraint killerConstraint{
-				[killer, i, j, this](const NumType num, const Sudoku& sudoku)
+				[killer, i, j](const NumType num, const Sudoku& sudoku)
 				{
 					bool hasZero{false};
 					NumType temp{0};

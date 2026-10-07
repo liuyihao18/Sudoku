@@ -66,7 +66,7 @@ bool Solver::Solve(Sudoku &sudoku) const
 bool Solver::SatisfyConstraints(const size_t i, const size_t j, NumType num, const Sudoku &sudoku,
                                 const ConstraintsType &extraConstraints)
 {
-    return !sudoku.HasNum(i, j, num) &&
+    return !sudoku.HasConflict(i, j, num) &&
            std::ranges::all_of(extraConstraints[K(i, j)],
                                [num, &sudoku](const Constraint &extraConstraint)
                                {

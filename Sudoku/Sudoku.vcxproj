@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="common.cpp" />
     <ClCompile Include="continuous_sudoku.cpp" />
+    <ClCompile Include="diagonal_sudoku.cpp" />
     <ClCompile Include="killer_sudoku.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="odd_even_sudoku.cpp" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="constant.h" />
     <ClInclude Include="continuous_sudoku.h" />
+    <ClInclude Include="diagonal_sudoku.h" />
     <ClInclude Include="killer_sudoku.h" />
     <ClInclude Include="no_horse_sudoku.h" />
     <ClInclude Include="odd_even_sudoku.h" />
