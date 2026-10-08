@@ -29,15 +29,15 @@ namespace
 		{
 			for (size_t j{}; j < N; j++)
 			{
-				Position p1{
+				const Position p1{
 					isTransposed ? i : j,
 					isTransposed ? j : i
 				};
-				Position p2{
+				const Position p2{
 					isTransposed ? i : j + 1,
 					isTransposed ? j + 1 : i
 				};
-				char c{ matrix[i][j] };
+				const char c{ matrix[i][j] };
 				switch (c)
 				{
 				case '<':
@@ -76,14 +76,14 @@ void ComparisonSudoku::InitializeSolver(Solver& solver)
 {
 	for (auto&& [p1, p2] : Comparisons)
 	{
-		Constraint ComparisonConstraint1{
+		ConstraintType ComparisonConstraint1{
 			[p2](NumType num, const Sudoku& sudoku)
 			{
 				return sudoku(p2.first, p2.second) == 0
 					|| num < sudoku(p2.first, p2.second);
 			}
 		};
-		Constraint ComparisonConstraint2{
+		ConstraintType ComparisonConstraint2{
 			[p1](NumType num, const Sudoku& sudoku)
 			{
 				return sudoku(p1.first, p1.second) == 0
@@ -111,8 +111,8 @@ std::istream& operator>>(std::istream& in, ComparisonSudoku& sudoku)
 	constexpr size_t M{ 9 };
 	constexpr size_t N{ 8 };
 
-	auto rowComparisonMatrix{ GetMatrix<char, M, N>(in) };
-	auto colComparisonMatrix{ GetMatrix<char, M, N>(in) };
+	const auto rowComparisonMatrix = GetMatrix<char, M, N>(in);
+	const auto colComparisonMatrix = GetMatrix<char, M, N>(in);
 
 	TranslateComparisons<true>(rowComparisonMatrix, sudoku.Comparisons);
 	TranslateComparisons<false>(colComparisonMatrix, sudoku.Comparisons);

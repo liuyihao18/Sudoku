@@ -53,7 +53,7 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 		Check(killer.Positions);
 		for (auto&& [i, j] : killer.Positions)
 		{
-			Constraint killerConstraint{
+			ConstraintType killerConstraint{
 				[killer, i, j](const NumType num, const Sudoku& sudoku)
 				{
 					bool hasZero{false};

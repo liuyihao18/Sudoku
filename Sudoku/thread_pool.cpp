@@ -3,7 +3,7 @@
 
 ThreadPool& ThreadPool::GetInstance()
 {
-	static ThreadPool threadPool{8};
+	static ThreadPool threadPool{9};
 	return threadPool;
 }
 

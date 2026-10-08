@@ -36,13 +36,13 @@ void ThermometerSudoku::InitializeSolver(Solver& solver)
 			auto&& [i1, j1]{thermometer[m]};
 			auto&& [i2, j2]{thermometer[m + 1]};
 			Check(i1, j1, i2, j2);
-			Constraint thermometerConstraint1{
+			ConstraintType thermometerConstraint1{
 				[i2, j2](const NumType num, const Sudoku& sudoku)
 				{
 					return !sudoku(i2, j2) || num < sudoku(i2, j2);
 				}
 			};
-			Constraint thermometerConstraint2{
+			ConstraintType thermometerConstraint2{
 				[i1, j1](const NumType num, const Sudoku& sudoku)
 				{
 					return !sudoku(i1, j1) || sudoku(i1, j1) < num;

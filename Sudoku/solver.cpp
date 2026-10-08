@@ -4,9 +4,9 @@
 #include "sudoku.h"
 #include "thread_pool.h"
 
-Solver::Solver()
+Solver::Solver() : ExtraConstraints(std::make_shared<ConstraintsType>())
 {
-    ExtraConstraints = std::make_shared<ConstraintsType>();
+
 }
 
 bool Solver::Solve(Sudoku &sudoku) const
@@ -68,7 +68,7 @@ bool Solver::SatisfyConstraints(const size_t i, const size_t j, NumType num, con
 {
     return !sudoku.HasConflict(i, j, num) &&
            std::ranges::all_of(extraConstraints[K(i, j)],
-                               [num, &sudoku](const Constraint &extraConstraint)
+                               [num, &sudoku](const ConstraintType &extraConstraint)
                                {
                                    return extraConstraint(num, sudoku);
                                });

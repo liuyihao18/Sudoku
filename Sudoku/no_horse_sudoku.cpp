@@ -26,7 +26,7 @@ void NoHorseSudoku::InitializeSolver(Solver& solver)
 	{
 		for (size_t j{}; j < COL_SIZE; j++)
 		{
-			Constraint horseConstraint{
+			ConstraintType horseConstraint{
 				[i, j](const NumType num, const Sudoku& sudoku)
 				{
 					bool result{true};
