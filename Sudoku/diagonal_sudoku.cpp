@@ -14,7 +14,7 @@ void DiagonalSudoku::InitializeSolver(Solver& solver)
 	for (size_t i{}; i < ROW_SIZE; i++)
 	{
 		size_t j{i};
-		Constraint diagonalConstraint{
+		ConstraintType diagonalConstraint{
 			[](const NumType num, const Sudoku& sudoku)
 			{
 				for (size_t i{}; i < ROW_SIZE; i++)
@@ -33,7 +33,7 @@ void DiagonalSudoku::InitializeSolver(Solver& solver)
 	for (size_t i{}; i < ROW_SIZE; i++) 
 	{
 		size_t j{COL_SIZE - i - 1};
-		Constraint diagonalConstraint{
+		ConstraintType diagonalConstraint{
 			[](const NumType num, const Sudoku& sudoku)
 			{
 				for (size_t i{}; i < ROW_SIZE; i++)

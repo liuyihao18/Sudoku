@@ -13,7 +13,7 @@ void OddEvenSudoku::InitializeSolver(Solver& solver)
 {
 	for (auto&& [i, j] : Odd)
 	{
-		Constraint oddConstraint{
+		ConstraintType oddConstraint{
 			[](const NumType num, const Sudoku&)
 			{
 				return num & 1;
@@ -23,7 +23,7 @@ void OddEvenSudoku::InitializeSolver(Solver& solver)
 	}
 	for (auto&& [i, j] : Even)
 	{
-		Constraint evenConstraint{
+		ConstraintType evenConstraint{
 			[](const NumType num, const Sudoku&)
 			{
 				return !(num & 1);

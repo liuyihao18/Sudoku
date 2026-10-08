@@ -19,8 +19,8 @@ static_assert(COL_SIZE == SQUARE_SIZE * SQUARE_COL_SIZE);
 static_assert(SQUARE_SIZE * SQUARE_SIZE == NUM_SIZE);
 
 using BoardType = std::array<NumType, BOARD_SIZE>;
-using Constraint = std::function<bool(NumType, const class Sudoku&)>;
-using ConstraintsType = std::array<std::vector<Constraint>, BOARD_SIZE>;
+using ConstraintType = std::function<bool(NumType, const class Sudoku&)>;
+using ConstraintsType = std::array<std::vector<ConstraintType>, BOARD_SIZE>;
 
 inline size_t K(const size_t i, const size_t j) { return i * COL_SIZE + j; }
 inline size_t I(const size_t k) { return k / COL_SIZE; }
