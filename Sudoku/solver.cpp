@@ -4,29 +4,28 @@
 #include "sudoku.h"
 #include "thread_pool.h"
 
-Solver::Solver() : ExtraConstraints(std::make_shared<ConstraintsType>())
+Solver::Solver()
 {
 
 }
 
-bool Solver::Solve(Sudoku &sudoku) const
+bool Solver::Solve(Sudoku &sudoku)
 {
-    if (!CheckOnce(FindSpaces(sudoku, *ExtraConstraints), sudoku, *ExtraConstraints))
+    if (!CheckOnce(FindSpaces(sudoku), sudoku))
     {
         return false;
     }
-    auto spaces = FindSpaces(sudoku, *ExtraConstraints);
+    auto spaces = FindSpaces(sudoku);
     if (spaces.empty())
     {
         return true;
     }
     auto &&[i, j] = spaces[0];
     auto copySpaces = std::make_shared<const std::vector<Position>>(std::move(spaces));
-    std::shared_ptr copyExtraConstraints = ExtraConstraints;
     std::vector<std::pair<std::future<bool>, std::shared_ptr<Sudoku>>> results;
     for (NumType num{1}; num <= NUM_SIZE; num++)
     {
-        if (!SatisfyConstraints(i, j, num, sudoku, *ExtraConstraints))
+        if (!SatisfyConstraints(i, j, num, sudoku))
         {
             continue;
         }
@@ -34,9 +33,9 @@ bool Solver::Solve(Sudoku &sudoku) const
         copySudoku->AddNum(i, j, num);
         results.emplace_back(
             ThreadPool::GetInstance().AddTask(
-                [copySpaces, copySudoku, copyExtraConstraints]
+                [copySpaces, copySudoku, this]
                 {
-                    return Dfs(*copySpaces, 1, *copySudoku, *copyExtraConstraints);
+                    return Dfs(*copySpaces, 1, *copySudoku);
                 }),
             copySudoku);
     }
@@ -63,24 +62,22 @@ bool Solver::Solve(Sudoku &sudoku) const
     return false;
 }
 
-bool Solver::SatisfyConstraints(const size_t i, const size_t j, NumType num, const Sudoku &sudoku,
-                                const ConstraintsType &extraConstraints)
+bool Solver::SatisfyConstraints(const size_t i, const size_t j, NumType num, const Sudoku &sudoku) const
 {
     return !sudoku.HasConflict(i, j, num) &&
-           std::ranges::all_of(extraConstraints[K(i, j)],
+           std::ranges::all_of(ExtraConstraints[K(i, j)],
                                [num, &sudoku](const ConstraintType &extraConstraint)
                                {
                                    return extraConstraint(num, sudoku);
                                });
 }
 
-size_t Solver::CalculateCandidateCount(const size_t i, const size_t j, NumType &targetNum, const Sudoku &sudoku,
-                                       const ConstraintsType &extraConstraints)
+size_t Solver::CalculateCandidateCount(const size_t i, const size_t j, NumType &targetNum, const Sudoku &sudoku) const
 {
     size_t count{};
     for (NumType num{1}; num <= NUM_SIZE; num++)
     {
-        if (SatisfyConstraints(i, j, num, sudoku, extraConstraints))
+        if (SatisfyConstraints(i, j, num, sudoku))
         {
             count++;
             targetNum = num;
@@ -89,7 +86,7 @@ size_t Solver::CalculateCandidateCount(const size_t i, const size_t j, NumType &
     return count;
 }
 
-std::vector<Position> Solver::FindSpaces(const Sudoku &sudoku, const ConstraintsType &)
+std::vector<Position> Solver::FindSpaces(const Sudoku &sudoku) const
 {
     std::vector<Position> spaces;
     for (size_t i{}; i < ROW_SIZE; i++)
@@ -105,8 +102,7 @@ std::vector<Position> Solver::FindSpaces(const Sudoku &sudoku, const Constraints
     return spaces;
 }
 
-void Solver::RestoreSpaces(const std::vector<Position> &spaces, size_t pos, Sudoku &sudoku,
-                           const ConstraintsType &)
+void Solver::RestoreSpaces(const std::vector<Position> &spaces, size_t pos, Sudoku &sudoku) const
 {
     for (const size_t n{spaces.size()}; pos < n; pos++)
     {
@@ -118,7 +114,7 @@ void Solver::RestoreSpaces(const std::vector<Position> &spaces, size_t pos, Sudo
     }
 }
 
-bool Solver::CheckOnce(const std::vector<Position> &spaces, Sudoku &sudoku, const ConstraintsType &extraConstraints)
+bool Solver::CheckOnce(const std::vector<Position> &spaces, Sudoku &sudoku) const
 {
     bool checkOver{};
     while (!checkOver)
@@ -131,7 +127,7 @@ bool Solver::CheckOnce(const std::vector<Position> &spaces, Sudoku &sudoku, cons
                 continue;
             }
             NumType targetNum{};
-            if (const size_t count{CalculateCandidateCount(i, j, targetNum, sudoku, extraConstraints)};
+            if (const size_t count{CalculateCandidateCount(i, j, targetNum, sudoku)};
                 count == 1)
             {
                 sudoku.AddNum(i, j, targetNum);
@@ -146,8 +142,7 @@ bool Solver::CheckOnce(const std::vector<Position> &spaces, Sudoku &sudoku, cons
     return true;
 }
 
-bool Solver::Dfs(const std::vector<Position> &spaces, const size_t pos, Sudoku &sudoku,
-                 const ConstraintsType &extraConstraints)
+bool Solver::Dfs(const std::vector<Position> &spaces, const size_t pos, Sudoku &sudoku) const
 {
     if (pos == spaces.size())
     {
@@ -156,20 +151,23 @@ bool Solver::Dfs(const std::vector<Position> &spaces, const size_t pos, Sudoku &
     auto &&[i, j]{spaces[pos]};
     if (sudoku(i, j))
     {
-        return Dfs(spaces, pos + 1, sudoku, extraConstraints);
+        return Dfs(spaces, pos + 1, sudoku);
     }
     for (NumType num{1}; num <= NUM_SIZE; num++)
     {
-        if (!SatisfyConstraints(i, j, num, sudoku, extraConstraints))
+        if (!SatisfyConstraints(i, j, num, sudoku))
         {
             continue;
         }
         sudoku.AddNum(i, j, num);
-        if (CheckOnce(spaces, sudoku, extraConstraints) && Dfs(spaces, pos + 1, sudoku, extraConstraints))
+        if (CheckOnce(spaces, sudoku))
         {
-            return true;
+            if (Dfs(spaces, pos + 1, sudoku))
+            {
+                return true;
+            }
         }
-        RestoreSpaces(spaces, pos, sudoku, extraConstraints);
+        RestoreSpaces(spaces, pos, sudoku);
     }
     return false;
 }
