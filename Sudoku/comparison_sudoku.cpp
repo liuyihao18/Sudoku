@@ -4,13 +4,13 @@
 
 #include "solver.h"
 
-namespace 
+namespace
 {
-	template<typename T, size_t M, size_t N>
-	std::array<std::array<T, N>, M> GetMatrix(std::istream& in) 
+	template <typename T, size_t M, size_t N>
+	std::array<std::array<T, N>, M> GetMatrix(std::istream& in)
 	{
 		std::array<std::array<T, N>, M> matrix{};
-		for (size_t i{}; i < M; i++) 
+		for (size_t i{}; i < M; i++)
 		{
 			for (size_t j{}; j < N; j++)
 			{
@@ -20,7 +20,7 @@ namespace
 		return matrix;
 	}
 
-	template<bool isTransposed, size_t M, size_t N>
+	template <bool isTransposed, size_t M, size_t N>
 	void TranslateComparisons(
 		const std::array<std::array<char, N>, M>& matrix,
 		std::vector<std::pair<Position, Position>>& outComparisons)
@@ -37,8 +37,7 @@ namespace
 					isTransposed ? i : j + 1,
 					isTransposed ? j + 1 : i
 				};
-				const char c{ matrix[i][j] };
-				switch (c)
+				switch (const char c{matrix[i][j]})
 				{
 				case '<':
 					{
@@ -108,8 +107,8 @@ std::istream& operator>>(std::istream& in, ComparisonSudoku& sudoku)
 	 *   - 矩阵必定是 9 行 8 列
 	 */
 
-	constexpr size_t M{ 9 };
-	constexpr size_t N{ 8 };
+	constexpr size_t M{9};
+	constexpr size_t N{8};
 
 	const auto rowComparisonMatrix = GetMatrix<char, M, N>(in);
 	const auto colComparisonMatrix = GetMatrix<char, M, N>(in);
