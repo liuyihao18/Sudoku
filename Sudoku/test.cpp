@@ -80,6 +80,17 @@ namespace
 			SolveSudoku(path);
 		}
 	}
+
+	void TestComparisonSudoku()
+	{
+		const auto dirName = "comparison/"s;
+		for (size_t i = 1; i <= 5; i++)
+		{
+			const auto filename = "sudoku"s + std::to_string(i) + ".txt"s;
+			std::filesystem::path path(dirName + filename);
+			SolveSudoku(path);
+		}
+	}
 }
 
 void TestAll()
@@ -94,6 +105,7 @@ void TestAll()
 	TestContinuousSudoku();
 	TestNoHorseSudoku();
 	TestDiagonalSudoku();
+	TestComparisonSudoku();
 
 	const auto end = std::chrono::system_clock::now();
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);

@@ -9,6 +9,8 @@
 #include "continuous_sudoku.h"
 #include "no_horse_sudoku.h"
 #include "diagonal_sudoku.h"
+#include "comparison_sudoku.h"
+
 #include "solver.h"
 
 namespace
@@ -25,7 +27,7 @@ namespace
 
 std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 {
-	int type = 0;
+	int type{};
 	in >> type;
 	switch (static_cast<SudokuType>(type))
 	{
@@ -68,6 +70,12 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 	case SudokuType::Diagonal:
 		{
 			auto sudoku = std::make_shared<DiagonalSudoku>();
+			in >> *sudoku;
+			return sudoku;
+		}
+	case SudokuType::Comparison:
+		{
+			auto sudoku = std::make_shared<ComparisonSudoku>();
 			in >> *sudoku;
 			return sudoku;
 		}
