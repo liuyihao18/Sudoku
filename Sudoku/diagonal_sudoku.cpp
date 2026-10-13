@@ -13,14 +13,14 @@ void DiagonalSudoku::InitializeSolver(Solver& solver)
 {
 	for (size_t i{}; i < ROW_SIZE; i++)
 	{
-		size_t j{i};
+		const size_t j{i};
 		ConstraintType diagonalConstraint{
 			[](const NumType num, const Sudoku& sudoku)
 			{
-				for (size_t i{}; i < ROW_SIZE; i++)
+				for (size_t ii{}; ii < ROW_SIZE; ii++)
 				{
-					size_t j{i};
-					if (num == sudoku(i, j))
+					if (const size_t jj{ii};
+						num == sudoku(ii, jj))
 					{
 						return false;
 					}
@@ -30,16 +30,16 @@ void DiagonalSudoku::InitializeSolver(Solver& solver)
 		};
 		solver.AddConstraint(i, j, std::move(diagonalConstraint));
 	}
-	for (size_t i{}; i < ROW_SIZE; i++) 
+	for (size_t i{}; i < ROW_SIZE; i++)
 	{
-		size_t j{COL_SIZE - i - 1};
+		const size_t j{COL_SIZE - i - 1};
 		ConstraintType diagonalConstraint{
 			[](const NumType num, const Sudoku& sudoku)
 			{
-				for (size_t i{}; i < ROW_SIZE; i++)
+				for (size_t ii{}; ii < ROW_SIZE; ii++)
 				{
-					size_t j{COL_SIZE - i - 1};
-					if (num == sudoku(i, j))
+					if (const size_t jj{COL_SIZE - ii - 1};
+						num == sudoku(ii, jj))
 					{
 						return false;
 					}

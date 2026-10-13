@@ -107,7 +107,7 @@ void SolveSudoku(const std::filesystem::path& path)
 	os.str(""s);
 	os << "文件: "sv << path << '\n';
 #ifdef _DEBUG
-	os << "模式: Debug"sv << std::endl;
+	os << "模式: Debug"sv << '\n';
 #elif NDEBUG
 	os << "模式: Release"sv << '\n';
 #endif

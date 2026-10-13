@@ -65,7 +65,7 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 							continue;
 						}
 						hasZero |= sudoku(ii, jj) == 0;
-						temp += sudoku(ii, jj);
+						temp += static_cast<NumType>(sudoku(ii, jj));
 					}
 					return hasZero ? temp + num <= killer.Sum : temp + num == killer.Sum;
 				}
