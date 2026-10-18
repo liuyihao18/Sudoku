@@ -53,6 +53,11 @@ namespace
 	{
 		TestSudoku("comparison/"s);
 	}
+
+	void TestArrowSudoku()
+	{
+		TestSudoku("arrow/"s);
+	}
 }
 
 void TestAll()
@@ -68,6 +73,7 @@ void TestAll()
 	TestNoHorseSudoku();
 	TestDiagonalSudoku();
 	TestComparisonSudoku();
+	TestArrowSudoku();
 
 	const auto end = std::chrono::system_clock::now();
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);

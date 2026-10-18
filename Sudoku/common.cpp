@@ -10,6 +10,7 @@
 #include "no_horse_sudoku.h"
 #include "diagonal_sudoku.h"
 #include "comparison_sudoku.h"
+#include "arrow_sudoku.h"
 
 #include "solver.h"
 
@@ -73,6 +74,11 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 			sudoku = std::make_shared<ComparisonSudoku>();
 			break;
 		}
+	case SudokuType::Arrow:
+		{
+			sudoku = std::make_shared<ArrowSudoku>();
+			break;
+		}
 	case SudokuType::None:
 	default:
 		{
@@ -82,7 +88,7 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 			throw std::runtime_error(os.str());
 		}
 	}
-	
+
 	in >> *sudoku;
 	return sudoku;
 }

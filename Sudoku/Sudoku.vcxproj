@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arrow_sudoku.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="comparison_sudoku.cpp" />
     <ClCompile Include="continuous_sudoku.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="thread_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arrow_sudoku.h" />
     <ClInclude Include="comparison_sudoku.h" />
     <ClInclude Include="constant.h" />
     <ClInclude Include="continuous_sudoku.h" />
