@@ -4,6 +4,11 @@
 #include "sudoku.h"
 #include "thread_pool.h"
 
+namespace
+{
+	constexpr bool ENABLE_RANDOM_SHUFFLE_NUMBERS = false;
+}
+
 Solver::Solver() : ExtraConstraints(std::make_shared<ConstraintsType>())
 {
 }
@@ -160,12 +165,24 @@ bool Solver::Dfs(const std::vector<Position>& spaces, const size_t pos, Sudoku& 
 		*solved = true;
 		return true;
 	}
+
 	auto&& [i, j]{spaces[pos]};
 	if (sudoku(i, j))
 	{
 		return Dfs(spaces, pos + 1, sudoku, extraConstraints, solved);
 	}
-	for (NumType num{1}; num <= NUM_SIZE; num++)
+
+	std::array<NumType, 9> numbers;
+	std::ranges::iota(numbers, 1);
+
+	if constexpr (ENABLE_RANDOM_SHUFFLE_NUMBERS)
+	{
+		std::random_device rd{};
+		std::mt19937 g(rd());
+		std::ranges::shuffle(numbers, g);
+	}
+
+	for (const NumType num : numbers)
 	{
 		if (!SatisfyConstraints(i, j, num, sudoku, extraConstraints))
 		{
@@ -178,5 +195,6 @@ bool Solver::Dfs(const std::vector<Position>& spaces, const size_t pos, Sudoku& 
 		}
 		RestoreSpaces(spaces, pos, sudoku, extraConstraints);
 	}
+
 	return false;
 }

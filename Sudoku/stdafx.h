@@ -8,7 +8,9 @@
 #include <future>
 #include <iostream>
 #include <mutex>
+#include <numeric>
 #include <queue>
+#include <random>
 #include <ranges>
 #include <sstream>
 #include <string>
