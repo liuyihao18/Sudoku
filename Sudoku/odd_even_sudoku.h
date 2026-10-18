@@ -9,7 +9,7 @@ public:
 	[[nodiscard]] std::string_view GetName() const override;
 	void InitializeSolver(Solver& solver) override;
 
-	friend std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku);
+	void Read(std::istream& in) override;
 
 private:
 	std::vector<Position> Odd;

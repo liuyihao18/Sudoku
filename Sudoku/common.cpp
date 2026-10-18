@@ -27,57 +27,51 @@ namespace
 
 std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 {
+	std::shared_ptr<Sudoku> sudoku;
+
 	int type{};
 	in >> type;
 	switch (static_cast<SudokuType>(type))
 	{
 	case SudokuType::Standard:
 		{
-			auto sudoku = std::make_shared<StandardSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<StandardSudoku>();
+			break;
 		}
 	case SudokuType::Killer:
 		{
-			auto sudoku = std::make_shared<KillerSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<KillerSudoku>();
+			break;
 		}
 	case SudokuType::Thermometer:
 		{
-			auto sudoku = std::make_shared<ThermometerSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<ThermometerSudoku>();
+			break;
 		}
 	case SudokuType::OddEven:
 		{
-			auto sudoku = std::make_shared<OddEvenSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<OddEvenSudoku>();
+			break;
 		}
 	case SudokuType::Continuous:
 		{
-			auto sudoku = std::make_shared<ContinuousSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<ContinuousSudoku>();
+			break;
 		}
 	case SudokuType::NoHorse:
 		{
-			auto sudoku = std::make_shared<NoHorseSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<NoHorseSudoku>();
+			break;
 		}
 	case SudokuType::Diagonal:
 		{
-			auto sudoku = std::make_shared<DiagonalSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<DiagonalSudoku>();
+			break;
 		}
 	case SudokuType::Comparison:
 		{
-			auto sudoku = std::make_shared<ComparisonSudoku>();
-			in >> *sudoku;
-			return sudoku;
+			sudoku = std::make_shared<ComparisonSudoku>();
+			break;
 		}
 	case SudokuType::None:
 	default:
@@ -88,6 +82,9 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 			throw std::runtime_error(os.str());
 		}
 	}
+	
+	in >> *sudoku;
+	return sudoku;
 }
 
 void SolveSudoku(const std::filesystem::path& path)

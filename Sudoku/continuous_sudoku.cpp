@@ -50,9 +50,9 @@ void ContinuousSudoku::InitializeSolver(Solver& solver)
 	}
 }
 
-std::istream& operator>>(std::istream& in, ContinuousSudoku& sudoku)
+void ContinuousSudoku::Read(std::istream& in)
 {
-	in >> static_cast<Sudoku&>(sudoku);
+	Super::Read(in);
 
 	/**
 	 * 连续数独额外约束输入格式：
@@ -96,7 +96,6 @@ std::istream& operator>>(std::istream& in, ContinuousSudoku& sudoku)
 			std::cerr << os.str();
 			throw std::runtime_error(os.str());
 		}
-		sudoku.ContinuousPositions.emplace_back(std::move(continuousPosition));
+		ContinuousPositions.emplace_back(std::move(continuousPosition));
 	}
-	return in;
 }

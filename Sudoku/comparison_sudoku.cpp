@@ -94,9 +94,9 @@ void ComparisonSudoku::InitializeSolver(Solver& solver)
 	}
 }
 
-std::istream& operator>>(std::istream& in, ComparisonSudoku& sudoku)
+void ComparisonSudoku::Read(std::istream& in)
 {
-	in >> static_cast<Sudoku&>(sudoku);
+	Super::Read(in);
 
 	/**
 	 * 数比数独额外约束输入格式：
@@ -107,14 +107,12 @@ std::istream& operator>>(std::istream& in, ComparisonSudoku& sudoku)
 	 *   - 矩阵必定是 9 行 8 列
 	 */
 
-	constexpr size_t m{9};
-	constexpr size_t n{8};
+	constexpr size_t m{ 9 };
+	constexpr size_t n{ 8 };
 
 	const auto rowComparisonMatrix = GetMatrix<char, m, n>(in);
 	const auto colComparisonMatrix = GetMatrix<char, m, n>(in);
 
-	TranslateComparisons<true>(rowComparisonMatrix, sudoku.Comparisons);
-	TranslateComparisons<false>(colComparisonMatrix, sudoku.Comparisons);
-
-	return in;
+	TranslateComparisons<true>(rowComparisonMatrix, Comparisons);
+	TranslateComparisons<false>(colComparisonMatrix, Comparisons);
 }

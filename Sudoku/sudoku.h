@@ -16,6 +16,9 @@ public:
 	[[nodiscard]] virtual std::string_view GetName() const;
 	virtual void InitializeSolver(Solver& solver);
 
+	virtual void Read(std::istream& in);
+	virtual void Print(std::ostream& out) const;
+
 	[[nodiscard]] bool HasConflict(const size_t i, const size_t j, const NumType num) const
 	{
 		return RowHasNum(i, j, num) || ColHasNum(i, j, num) || SquareHasNum(i, j, num);

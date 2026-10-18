@@ -5,12 +5,14 @@ class ThermometerSudoku final : public Sudoku
 {
 	using Super = Sudoku;
 
+	using Thermometer = std::vector<Position>;
+
 public:
 	[[nodiscard]] std::string_view GetName() const override;
 	void InitializeSolver(Solver& solver) override;
 
-	friend std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku);
+	void Read(std::istream& in) override;
 
 private:
-	std::vector<std::vector<Position>> Thermometers;
+	std::vector<Thermometer> Thermometers;
 };

@@ -11,6 +11,7 @@ enum class SudokuType : std::uint8_t
 	NoHorse = 6,     // 无马数独
 	Diagonal = 7,    // 对角线数独
 	Comparison = 8,  // 数比数独
+	Arrow = 9,       // 箭头数独
 };
 
 class Sudoku;

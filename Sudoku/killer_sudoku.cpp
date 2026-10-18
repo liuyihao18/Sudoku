@@ -65,7 +65,7 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 							continue;
 						}
 						hasZero |= sudoku(ii, jj) == 0;
-						temp += static_cast<NumType>(sudoku(ii, jj));
+						temp += sudoku(ii, jj);
 					}
 					return hasZero ? temp + num <= killer.Sum : temp + num == killer.Sum;
 				}
@@ -75,9 +75,9 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 	}
 }
 
-std::istream& operator>>(std::istream& in, KillerSudoku& sudoku)
+void KillerSudoku::Read(std::istream& in)
 {
-	in >> static_cast<Sudoku&>(sudoku);
+	Super::Read(in);
 
 	/**
 	 * 杀手数独额外约束输入格式：
@@ -116,7 +116,6 @@ std::istream& operator>>(std::istream& in, KillerSudoku& sudoku)
 			std::cerr << os.str();
 			throw std::runtime_error(os.str());
 		}
-		sudoku.Killers.emplace_back(sum, std::move(positions));
+		Killers.emplace_back(sum, std::move(positions));
 	}
-	return in;
 }

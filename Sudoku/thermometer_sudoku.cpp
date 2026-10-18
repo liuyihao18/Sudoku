@@ -54,9 +54,9 @@ void ThermometerSudoku::InitializeSolver(Solver& solver)
 	}
 }
 
-std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku)
+void ThermometerSudoku::Read(std::istream& in)
 {
-	in >> static_cast<Sudoku&>(sudoku);
+	Super::Read(in);
 
 	/**
 	 * 温度计数独额外约束输入格式：
@@ -72,7 +72,7 @@ std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku)
 			continue;
 		}
 		std::istringstream iss(line);
-		std::vector<Position> thermometer;
+		ThermometerSudoku::Thermometer thermometer;
 		while (iss)
 		{
 			Position p{};
@@ -93,7 +93,6 @@ std::istream& operator>>(std::istream& in, ThermometerSudoku& sudoku)
 			std::cerr << os.str();
 			throw std::runtime_error(os.str());
 		}
-		sudoku.Thermometers.emplace_back(std::move(thermometer));
+		Thermometers.emplace_back(std::move(thermometer));
 	}
-	return in;
 }

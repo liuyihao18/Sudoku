@@ -33,9 +33,9 @@ void OddEvenSudoku::InitializeSolver(Solver& solver)
 	}
 }
 
-std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku)
+void OddEvenSudoku::Read(std::istream& in)
 {
-	in >> static_cast<Sudoku&>(sudoku);
+	Super::Read(in);
 
 	/**
 	 * 奇偶数独额外约束输入格式：
@@ -72,7 +72,7 @@ std::istream& operator>>(std::istream& in, OddEvenSudoku& sudoku)
 			}
 		}
 	};
-	input(sudoku.Odd);
-	input(sudoku.Even);
-	return in;
+
+	input(Odd);
+	input(Even);
 }
