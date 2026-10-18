@@ -67,7 +67,7 @@ void KillerSudoku::InitializeSolver(Solver& solver)
 						hasZero |= sudoku(ii, jj) == 0;
 						temp += sudoku(ii, jj);
 					}
-					return hasZero ? temp + num <= killer.Sum : temp + num == killer.Sum;
+					return hasZero ? temp + num < killer.Sum : temp + num == killer.Sum;
 				}
 			};
 			solver.AddConstraint(i, j, std::move(killerConstraint));

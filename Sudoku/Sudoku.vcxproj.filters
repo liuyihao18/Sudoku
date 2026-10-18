@@ -60,6 +60,9 @@
     <ClCompile Include="comparison_sudoku.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="arrow_sudoku.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sudoku.h">
@@ -105,6 +108,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="comparison_sudoku.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="arrow_sudoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

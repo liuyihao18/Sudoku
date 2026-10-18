@@ -28,7 +28,7 @@ std::string_view ThermometerSudoku::GetName() const
 
 void ThermometerSudoku::InitializeSolver(Solver& solver)
 {
-	for (const std::vector<Position>& thermometer : Thermometers)
+	for (const Thermometer& thermometer : Thermometers)
 	{
 		const size_t n{thermometer.size()};
 		for (size_t m{}; m + 1 < n; m++)
@@ -62,7 +62,7 @@ void ThermometerSudoku::Read(std::istream& in)
 	 * 温度计数独额外约束输入格式：
 	 *   - 每一行一条温度计链，位置按从小到大排列
 	 *   - x1 y1 x2 y2 x3 y3 ...
-	 *   - 满足 (x1, y1) < (x2, y2) < (x3, y3) < ...
+	 *   - 满足 Board(x1, y1) < Board(x2, y2) < Board(x3, y3) < ...
 	 */
 	std::string line{};
 	while (std::getline(in, line))
@@ -72,7 +72,7 @@ void ThermometerSudoku::Read(std::istream& in)
 			continue;
 		}
 		std::istringstream iss(line);
-		ThermometerSudoku::Thermometer thermometer;
+		Thermometer thermometer;
 		while (iss)
 		{
 			Position p{};
