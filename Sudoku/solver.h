@@ -26,7 +26,7 @@ private:
 	static bool CheckOnce(const std::vector<Position>& spaces, Sudoku& sudoku,
 	                      const ConstraintsType& extraConstraints);
 	static bool Dfs(const std::vector<Position>& spaces, size_t pos, Sudoku& sudoku,
-	                const ConstraintsType& extraConstraints);
+	                const ConstraintsType& extraConstraints, const std::shared_ptr<std::atomic<bool>>& solved);
 };
 
 template <typename Func>

@@ -23,6 +23,7 @@ bool Solver::Solve(Sudoku& sudoku) const
 	auto copySpaces = std::make_shared<const std::vector<Position>>(std::move(spaces));
 	std::shared_ptr copyExtraConstraints = ExtraConstraints;
 	std::vector<std::pair<std::future<bool>, std::shared_ptr<Sudoku>>> results;
+	auto solved = std::make_shared<std::atomic<bool>>(false);
 	for (NumType num{1}; num <= NUM_SIZE; num++)
 	{
 		if (!SatisfyConstraints(i, j, num, sudoku, *ExtraConstraints))
@@ -33,9 +34,9 @@ bool Solver::Solve(Sudoku& sudoku) const
 		copySudoku->AddNum(i, j, num);
 		results.emplace_back(
 			ThreadPool::GetInstance().AddTask(
-				[copySpaces, copySudoku, copyExtraConstraints]
+				[copySpaces, copySudoku, copyExtraConstraints, solved]
 				{
-					return Dfs(*copySpaces, 1, *copySudoku, *copyExtraConstraints);
+					return Dfs(*copySpaces, 1, *copySudoku, *copyExtraConstraints, solved);
 				}),
 			copySudoku);
 	}
@@ -148,16 +149,21 @@ bool Solver::CheckOnce(const std::vector<Position>& spaces, Sudoku& sudoku,
 }
 
 bool Solver::Dfs(const std::vector<Position>& spaces, const size_t pos, Sudoku& sudoku,
-                 const ConstraintsType& extraConstraints)
+                 const ConstraintsType& extraConstraints, const std::shared_ptr<std::atomic<bool>>& solved)
 {
+	if (*solved)
+	{
+		return false;
+	}
 	if (pos == spaces.size())
 	{
+		*solved = true;
 		return true;
 	}
 	auto&& [i, j]{spaces[pos]};
 	if (sudoku(i, j))
 	{
-		return Dfs(spaces, pos + 1, sudoku, extraConstraints);
+		return Dfs(spaces, pos + 1, sudoku, extraConstraints, solved);
 	}
 	for (NumType num{1}; num <= NUM_SIZE; num++)
 	{
@@ -166,7 +172,7 @@ bool Solver::Dfs(const std::vector<Position>& spaces, const size_t pos, Sudoku& 
 			continue;
 		}
 		sudoku.AddNum(i, j, num);
-		if (CheckOnce(spaces, sudoku, extraConstraints) && Dfs(spaces, pos + 1, sudoku, extraConstraints))
+		if (CheckOnce(spaces, sudoku, extraConstraints) && Dfs(spaces, pos + 1, sudoku, extraConstraints, solved))
 		{
 			return true;
 		}
