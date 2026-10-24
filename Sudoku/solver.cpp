@@ -6,6 +6,7 @@
 
 namespace
 {
+	constexpr bool ENABLE_MAX_START_NUM = false;
 	constexpr bool ENABLE_RANDOM_SHUFFLE_NUMBERS = false;
 }
 
@@ -22,7 +23,35 @@ bool Solver::Solve(Sudoku& sudoku)
 		return true;
 	}
 
-	auto [i, j] = spaces[0];
+	Position p;
+	if constexpr (ENABLE_MAX_START_NUM)
+	{
+		std::vector<size_t> indexes(spaces.size());
+		std::ranges::iota(indexes, 0);
+
+		std::vector<size_t> candidateCounts(spaces.size());
+		std::ranges::transform(
+			spaces, std::begin(candidateCounts),
+			[&sudoku](const Position& p)
+			{
+				auto [i, j]{p};
+				NumType null;
+				return CalculateCandidateCount(sudoku, i, j, null);
+			});
+
+		std::ranges::sort(indexes, [&candidateCounts](const size_t i1, const size_t i2)
+		{
+			return candidateCounts[i1] > candidateCounts[i2];
+		});
+
+		p = spaces[indexes[0]];
+	}
+	else
+	{
+		p = spaces[0];
+	}
+
+	auto [i, j]{p};
 	auto solved = std::make_shared<std::atomic<bool>>(false);
 
 	std::vector<std::pair<std::future<bool>, std::shared_ptr<Sudoku>>> results;
