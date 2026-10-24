@@ -12,6 +12,7 @@ enum class SudokuType : std::uint8_t
 	Diagonal = 7,    // 对角线数独
 	Comparison = 8,  // 数比数独
 	Arrow = 9,       // 箭头数独
+	Window = 10,     // 窗口数独
 };
 
 class Sudoku;

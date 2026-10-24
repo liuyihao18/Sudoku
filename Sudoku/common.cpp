@@ -13,6 +13,7 @@
 #include "arrow_sudoku.h"
 
 #include "solver.h"
+#include "window_sudoku.h"
 
 namespace
 {
@@ -78,6 +79,11 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 	case SudokuType::Arrow:
 		{
 			sudoku = std::make_shared<ArrowSudoku>();
+			break;
+		}
+	case SudokuType::Window:
+		{
+			sudoku = std::make_shared<WindowSudoku>();
 			break;
 		}
 	case SudokuType::None:

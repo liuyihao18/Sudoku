@@ -41,41 +41,39 @@ void ArrowSudoku::InitializeConstraints()
 
 		for (auto&& [i, j] : arrow)
 		{
-			AddConstraint(
-				i, j,
-				[arrow, i, j](const Sudoku& sudoku, const NumType num)
+			AddConstraint(i, j, [arrow, i, j](const Sudoku& sudoku, const NumType num)
+			{
+				bool isStart;
+				NumType sum;
+				if (auto [startI, startJ]{arrow[0]};
+					i == startI && j == startJ)
 				{
-					bool isStart;
-					NumType sum;
-					if (auto [startI, startJ]{arrow[0]};
-						i == startI && j == startJ)
-					{
-						isStart = true;
-						sum = num;
-					}
-					else
-					{
-						isStart = false;
-						sum = sudoku(startI, startJ);
-					}
+					isStart = true;
+					sum = num;
+				}
+				else
+				{
+					isStart = false;
+					sum = sudoku(startI, startJ);
+				}
 
-					bool hasZero{false};
-					NumType temp{0};
-					for (size_t index{1}, n{arrow.size()}; index < n; index++)
+				bool hasZero{false};
+				NumType temp{0};
+				for (size_t index{1}, n{arrow.size()}; index < n; index++)
+				{
+					auto [ii, jj] = arrow[index];
+					if (ii == i && jj == j)
 					{
-						auto [ii, jj] = arrow[index];
-						if (ii == i && jj == j)
-						{
-							continue;
-						}
-						hasZero |= sudoku(ii, jj) == 0;
-						temp += sudoku(ii, jj);
+						continue;
 					}
+					hasZero |= sudoku(ii, jj) == 0;
+					temp += sudoku(ii, jj);
+				}
 
-					return isStart
-						       ? (hasZero ? temp < sum : temp == sum)
-						       : sum == 0 || (hasZero ? temp + num < sum : temp + num == sum);
-				});
+				return isStart
+					       ? (hasZero ? temp < sum : temp == sum)
+					       : sum == 0 || (hasZero ? temp + num < sum : temp + num == sum);
+			});
 		}
 	}
 }
@@ -93,10 +91,6 @@ void ArrowSudoku::Read(std::istream& in)
 	std::string line{};
 	while (std::getline(in, line))
 	{
-		if (line.empty())
-		{
-			continue;
-		}
 		if (Arrow arrow;
 			IO::ParseLine(line, arrow, NAME))
 		{

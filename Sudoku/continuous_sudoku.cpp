@@ -65,7 +65,7 @@ void ContinuousSudoku::Read(std::istream& in)
 			if (positions.size() != 2)
 			{
 				std::ostringstream os;
-				os << "- "sv << NAME << "约束错误："sv << positions.size() << " != 2\n"sv;
+				os << "- "sv << NAME << "约束错误："sv << line << " 点数错误\n"sv;
 				std::cerr << os.str();
 				throw std::runtime_error(os.str());
 			}

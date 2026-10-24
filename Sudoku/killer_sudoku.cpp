@@ -89,10 +89,6 @@ void KillerSudoku::Read(std::istream& in)
 	std::string line{};
 	while (std::getline(in, line))
 	{
-		if (line.empty())
-		{
-			continue;
-		}
 		if (Killer killer;
 			IO::ParseLine(line, killer.Sum, killer.Positions, NAME))
 		{

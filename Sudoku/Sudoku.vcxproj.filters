@@ -13,33 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Sudoku">
+      <UniqueIdentifier>{9bb1d575-dfe3-420d-a788-d49015850fb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Sudoku">
+      <UniqueIdentifier>{1bc27fac-6b7d-457d-9d17-663635be668c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="no_horse_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="sudoku.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="thermometer_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="continuous_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="standard_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="killer_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="odd_even_sudoku.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="thread_pool.cpp">
@@ -54,42 +42,45 @@
     <ClCompile Include="solver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="diagonal_sudoku.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="comparison_sudoku.cpp">
+    <ClCompile Include="io.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="arrow_sudoku.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Sudoku</Filter>
     </ClCompile>
-    <ClCompile Include="io.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="comparison_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="continuous_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="diagonal_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="killer_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="no_horse_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="odd_even_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="standard_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="thermometer_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
+    </ClCompile>
+    <ClCompile Include="window_sudoku.cpp">
+      <Filter>源文件\Sudoku</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sudoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="no_horse_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="thermometer_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="continuous_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="standard_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="killer_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="odd_even_sudoku.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="thread_pool.h">
@@ -104,19 +95,40 @@
     <ClInclude Include="solver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="constant.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="diagonal_sudoku.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="comparison_sudoku.h">
+    <ClInclude Include="io.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="arrow_sudoku.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Sudoku</Filter>
     </ClInclude>
-    <ClInclude Include="io.h">
+    <ClInclude Include="comparison_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="continuous_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="diagonal_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="killer_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="no_horse_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="odd_even_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="standard_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="thermometer_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="window_sudoku.h">
+      <Filter>头文件\Sudoku</Filter>
+    </ClInclude>
+    <ClInclude Include="constant.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
