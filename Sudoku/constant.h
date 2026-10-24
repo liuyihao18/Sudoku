@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 using NumType = int16_t;
 using Bitmap = uint16_t;

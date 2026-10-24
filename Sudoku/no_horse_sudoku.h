@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "sudoku.h"
 
 class NoHorseSudoku final : public Sudoku
