@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "thread_pool.h"
 
 ThreadPool& ThreadPool::GetInstance()

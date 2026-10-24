@@ -1,35 +1,34 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "odd_even_sudoku.h"
 
-#include "solver.h"
+#include "io.h"
+
+namespace
+{
+	constexpr auto NAME{"奇偶数独"sv};
+}
 
 std::string_view OddEvenSudoku::GetName() const
 {
-	return "奇偶数独"sv;
+	return NAME;
 }
 
-void OddEvenSudoku::InitializeSolver(Solver& solver)
+void OddEvenSudoku::InitializeConstraints()
 {
 	for (auto&& [i, j] : Odd)
 	{
-		ConstraintType oddConstraint{
-			[](const NumType num, const Sudoku&)
-			{
-				return num & 1;
-			}
-		};
-		solver.AddConstraint(i, j, std::move(oddConstraint));
+		AddConstraint(i, j, [](const Sudoku&, const NumType num)
+		{
+			return num & 1;
+		});
 	}
 	for (auto&& [i, j] : Even)
 	{
-		ConstraintType evenConstraint{
-			[](const NumType num, const Sudoku&)
-			{
-				return !(num & 1);
-			}
-		};
-		solver.AddConstraint(i, j, std::move(evenConstraint));
+		AddConstraint(i, j, [](const Sudoku&, const NumType num)
+		{
+			return !(num & 1);
+		});
 	}
 }
 
@@ -49,27 +48,7 @@ void OddEvenSudoku::Read(std::istream& in)
 			while (std::getline(in, line) && line.empty())
 			{
 			}
-			std::istringstream iss(line);
-			while (iss)
-			{
-				Position p{};
-				iss >> p.first >> p.second;
-				if (p.first == 0 && p.second == 0)
-				{
-					break;
-				}
-				if (p.first != 0 && p.second != 0)
-				{
-					p.first--;
-					p.second--;
-					positions.emplace_back(p);
-					continue;
-				}
-				std::ostringstream os;
-				os << "- 奇偶数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立\n"sv;
-				std::cerr << os.str();
-				throw std::runtime_error(os.str());
-			}
+			IO::ParseLine(line, positions, NAME);
 		}
 	};
 

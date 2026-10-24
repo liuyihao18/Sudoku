@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "sudoku.h"
 
 class NoHorseSudoku final : public Sudoku
@@ -7,5 +7,5 @@ class NoHorseSudoku final : public Sudoku
 
 public:
 	[[nodiscard]] std::string_view GetName() const override;
-	void InitializeSolver(Solver& solver) override;
+	void InitializeConstraints() override;
 };

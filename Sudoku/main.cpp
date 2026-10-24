@@ -1,9 +1,9 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "common.h"
 #include "test.h"
 
-int main(const int argc, char** argv)
+int main(const int argc, char **argv)
 {
 	try
 	{
@@ -16,7 +16,7 @@ int main(const int argc, char** argv)
 			TestAll();
 		}
 	}
-	catch (const std::runtime_error&)
+	catch (const std::runtime_error &)
 	{
 		return -1;
 	}

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="源文件">
@@ -63,6 +63,9 @@
     <ClCompile Include="arrow_sudoku.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="io.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sudoku.h">
@@ -111,6 +114,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="arrow_sudoku.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="io.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "sudoku.h"
 
@@ -7,8 +7,34 @@ std::string_view Sudoku::GetName() const
 	return "数独"sv;
 }
 
-void Sudoku::InitializeSolver(Solver& solver)
+void Sudoku::InitializeConstraints()
 {
+}
+
+std::vector<Position> Sudoku::GetSpaces() const
+{
+	std::vector<Position> spaces;
+	for (size_t i{}; i < ROW_SIZE; i++)
+	{
+		for (size_t j{}; j < COL_SIZE; j++)
+		{
+			if (!Board[K(i, j)])
+			{
+				spaces.emplace_back(i, j);
+			}
+		}
+	}
+	return spaces;
+}
+
+bool Sudoku::SatisfyConstraints(const size_t i, const size_t j, NumType num) const
+{
+	return !HasConflict(i, j, num) &&
+		std::ranges::all_of(ExtraConstraints[K(i, j)],
+		                    [this, num](const ConstraintType& extraConstraint)
+		                    {
+			                    return extraConstraint(*this, num);
+		                    });
 }
 
 void Sudoku::Read(std::istream& in)

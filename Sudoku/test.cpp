@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "common.h"
 
@@ -6,9 +6,9 @@ namespace
 {
 	void TestSudoku(const std::string& dirName)
 	{
-		for (size_t i = 1; i <= 5; i++)
+		for (size_t i{1}; i <= 5; i++)
 		{
-			const auto filename = "sudoku"s + std::to_string(i) + ".txt"s;
+			const auto filename{"sudoku"s + std::to_string(i) + ".txt"s};
 			std::filesystem::path path(dirName + filename);
 			SolveSudoku(path);
 		}
@@ -62,7 +62,7 @@ namespace
 
 void TestAll()
 {
-	const auto start = std::chrono::system_clock::now();
+	const auto start{std::chrono::system_clock::now()};
 	std::cout << "*** 开始批量测试 ***\n\n"sv;
 
 	TestStandardSudoku();
@@ -75,7 +75,7 @@ void TestAll()
 	TestComparisonSudoku();
 	TestArrowSudoku();
 
-	const auto end = std::chrono::system_clock::now();
-	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+	const auto end{std::chrono::system_clock::now()};
+	const auto duration{std::chrono::duration_cast<std::chrono::milliseconds>(end - start)};
 	std::cout << "*** 总用时："sv << duration << " ***\n"sv;
 }

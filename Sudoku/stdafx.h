@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -7,6 +7,7 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <map>
 #include <mutex>
 #include <numeric>
 #include <queue>

@@ -1,11 +1,13 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "killer_sudoku.h"
 
-#include "solver.h"
+#include "io.h"
 
 namespace
 {
+	constexpr auto NAME{"杀手数独"sv};
+
 	void Check(const std::vector<Position>& positions)
 	{
 		auto distance{
@@ -16,8 +18,8 @@ namespace
 				return deltaI + deltaJ;
 			}
 		};
-		const size_t n{positions.size()};
-		for (size_t i{}; i < n; i++)
+
+		for (size_t i{}, n{positions.size()}; i < n; i++)
 		{
 			size_t minDistance{0xffffffff};
 			Position p1{positions[i]};
@@ -30,10 +32,12 @@ namespace
 				Position p2{positions[j]};
 				minDistance = std::min(minDistance, distance(p1, p2));
 			}
+
 			if (minDistance != 1)
 			{
 				std::ostringstream os;
-				os << "- 杀手数独约束错误：("sv << p1.first + 1 << ", "sv << p1.second + 1 << ") 不连续\n"sv;
+				os << "- "sv << NAME << "约束错误：("sv
+					<< p1.first + 1 << ", "sv << p1.second + 1 << ") 不连续\n"sv;
 				std::cerr << os.str();
 				throw std::runtime_error(os.str());
 			}
@@ -43,34 +47,31 @@ namespace
 
 std::string_view KillerSudoku::GetName() const
 {
-	return "杀手数独"sv;
+	return NAME;
 }
 
-void KillerSudoku::InitializeSolver(Solver& solver)
+void KillerSudoku::InitializeConstraints()
 {
 	for (const Killer& killer : Killers)
 	{
 		Check(killer.Positions);
 		for (auto&& [i, j] : killer.Positions)
 		{
-			ConstraintType killerConstraint{
-				[killer, i, j](const NumType num, const Sudoku& sudoku)
+			AddConstraint(i, j, [killer, i, j](const Sudoku& sudoku, const NumType num)
+			{
+				bool hasZero{false};
+				NumType temp{0};
+				for (auto&& [ii, jj] : killer.Positions)
 				{
-					bool hasZero{false};
-					NumType temp{0};
-					for (auto&& [ii, jj] : killer.Positions)
+					if (ii == i && jj == j)
 					{
-						if (ii == i && jj == j)
-						{
-							continue;
-						}
-						hasZero |= sudoku(ii, jj) == 0;
-						temp += sudoku(ii, jj);
+						continue;
 					}
-					return hasZero ? temp + num < killer.Sum : temp + num == killer.Sum;
+					hasZero |= sudoku(ii, jj) == 0;
+					temp += sudoku(ii, jj);
 				}
-			};
-			solver.AddConstraint(i, j, std::move(killerConstraint));
+				return hasZero ? temp + num < killer.Sum : temp + num == killer.Sum;
+			});
 		}
 	}
 }
@@ -92,30 +93,10 @@ void KillerSudoku::Read(std::istream& in)
 		{
 			continue;
 		}
-		std::istringstream iss(line);
-		NumType sum{};
-		std::vector<Position> positions;
-		iss >> sum;
-		while (iss)
+		if (Killer killer;
+			IO::ParseLine(line, killer.Sum, killer.Positions, NAME))
 		{
-			Position p{};
-			iss >> p.first >> p.second;
-			if (p.first == 0 && p.second == 0)
-			{
-				break;
-			}
-			if (p.first != 0 && p.second != 0)
-			{
-				p.first--;
-				p.second--;
-				positions.emplace_back(p);
-				continue;
-			}
-			std::ostringstream os;
-			os << "- 杀手数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立\n"sv;
-			std::cerr << os.str();
-			throw std::runtime_error(os.str());
+			Killers.emplace_back(std::move(killer));
 		}
-		Killers.emplace_back(sum, std::move(positions));
 	}
 }

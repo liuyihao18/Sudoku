@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "common.h"
 
@@ -18,8 +18,8 @@ namespace
 {
 	std::string GetCurrentTimestamp()
 	{
-		const std::chrono::system_clock::time_point timePoint = std::chrono::system_clock::now();
-		const std::time_t timestamp = std::chrono::system_clock::to_time_t(timePoint);
+		const std::chrono::system_clock::time_point timePoint{std::chrono::system_clock::now()};
+		const std::time_t timestamp{std::chrono::system_clock::to_time_t(timePoint)};
 		return std::to_string(timestamp);
 	}
 
@@ -32,6 +32,7 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 
 	int type{};
 	in >> type;
+
 	switch (static_cast<SudokuType>(type))
 	{
 	case SudokuType::Standard:
@@ -90,6 +91,8 @@ std::shared_ptr<Sudoku> GetSudoku(std::istream& in)
 	}
 
 	in >> *sudoku;
+	sudoku->InitializeConstraints();
+
 	return sudoku;
 }
 
@@ -104,9 +107,7 @@ void SolveSudoku(const std::filesystem::path& path)
 		throw std::runtime_error(os.str());
 	}
 	std::ifstream is(path);
-	std::shared_ptr<Sudoku> sudoku = GetSudoku(is);
-	Solver solver;
-	sudoku->InitializeSolver(solver);
+	auto sudoku{GetSudoku(is)};
 	os.str(""s);
 	os << "文件: "sv << path << '\n';
 #ifdef _DEBUG
@@ -115,10 +116,10 @@ void SolveSudoku(const std::filesystem::path& path)
 	os << "模式: Release"sv << '\n';
 #endif
 	std::cout << os.str();
-	auto start = std::chrono::system_clock::now();
-	solver.Solve(*sudoku);
-	auto end = std::chrono::system_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+	auto start{std::chrono::system_clock::now()};
+	Solver::Solve(*sudoku);
+	auto end{std::chrono::system_clock::now()};
+	auto duration{std::chrono::duration_cast<std::chrono::milliseconds>(end - start)};
 	os.str(""s);
 	os << "用时: "sv << duration << "\n\n";
 	std::cout << os.str();

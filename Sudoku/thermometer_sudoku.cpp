@@ -1,11 +1,13 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "thermometer_sudoku.h"
 
-#include "solver.h"
+#include "io.h"
 
 namespace
 {
+	constexpr auto NAME{"温度计数独"sv};
+
 	void Check(const size_t i1, const size_t j1, const size_t i2, const size_t j2)
 	{
 		if (const int si1{static_cast<int>(i1)}, sj1{static_cast<int>(j1)},
@@ -13,8 +15,8 @@ namespace
 			abs(si2 - si1) > 1 || abs(sj2 - sj1) > 1)
 		{
 			std::ostringstream os;
-			os << "- 温度计数独约束错误：("sv << si1 + 1 << ", "sv << sj1 + 1 << ") < ("sv << si2 + 1 << ", "sv << sj2 + 1 <<
-				") 不连续\n"sv;
+			os << "- "sv << "约束错误：("sv
+				<< si1 + 1 << ", "sv << sj1 + 1 << ") < ("sv << si2 + 1 << ", "sv << sj2 + 1 << ") 不连续\n"sv;
 			std::cerr << os.str();
 			throw std::runtime_error(os.str());
 		}
@@ -23,10 +25,10 @@ namespace
 
 std::string_view ThermometerSudoku::GetName() const
 {
-	return "温度计数独"sv;
+	return NAME;
 }
 
-void ThermometerSudoku::InitializeSolver(Solver& solver)
+void ThermometerSudoku::InitializeConstraints()
 {
 	for (const Thermometer& thermometer : Thermometers)
 	{
@@ -36,20 +38,15 @@ void ThermometerSudoku::InitializeSolver(Solver& solver)
 			auto&& [i1, j1]{thermometer[m]};
 			auto&& [i2, j2]{thermometer[m + 1]};
 			Check(i1, j1, i2, j2);
-			ConstraintType thermometerConstraint1{
-				[i2, j2](const NumType num, const Sudoku& sudoku)
-				{
-					return !sudoku(i2, j2) || num < sudoku(i2, j2);
-				}
-			};
-			ConstraintType thermometerConstraint2{
-				[i1, j1](const NumType num, const Sudoku& sudoku)
-				{
-					return !sudoku(i1, j1) || sudoku(i1, j1) < num;
-				}
-			};
-			solver.AddConstraint(i1, j1, std::move(thermometerConstraint1));
-			solver.AddConstraint(i2, j2, std::move(thermometerConstraint2));
+
+			AddConstraint(i1, j1, [i2, j2](const Sudoku& sudoku, const NumType num)
+			{
+				return !sudoku(i2, j2) || num < sudoku(i2, j2);
+			});
+			AddConstraint(i2, j2, [i1, j1](const Sudoku& sudoku, const NumType num)
+			{
+				return !sudoku(i1, j1) || sudoku(i1, j1) < num;
+			});
 		}
 	}
 }
@@ -71,28 +68,11 @@ void ThermometerSudoku::Read(std::istream& in)
 		{
 			continue;
 		}
-		std::istringstream iss(line);
-		Thermometer thermometer;
-		while (iss)
+
+		if (Thermometer thermometer;
+			IO::ParseLine(line, thermometer, NAME))
 		{
-			Position p{};
-			iss >> p.first >> p.second;
-			if (p.first == 0 && p.second == 0)
-			{
-				break;
-			}
-			if (p.first != 0 && p.second != 0)
-			{
-				p.first--;
-				p.second--;
-				thermometer.emplace_back(p);
-				continue;
-			}
-			std::ostringstream os;
-			os << "- 温度计数独约束错误：("sv << p.first << ", "sv << p.second << ") 孤立\n"sv;
-			std::cerr << os.str();
-			throw std::runtime_error(os.str());
+			Thermometers.emplace_back(std::move(thermometer));
 		}
-		Thermometers.emplace_back(std::move(thermometer));
 	}
 }

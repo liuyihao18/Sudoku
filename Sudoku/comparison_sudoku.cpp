@@ -1,26 +1,14 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "comparison_sudoku.h"
 
-#include "solver.h"
+#include "io.h"
 
 namespace
 {
-	template <typename T, size_t M, size_t N>
-	std::array<std::array<T, N>, M> GetMatrix(std::istream& in)
-	{
-		std::array<std::array<T, N>, M> matrix{};
-		for (size_t i{}; i < M; i++)
-		{
-			for (size_t j{}; j < N; j++)
-			{
-				in >> matrix[i][j];
-			}
-		}
-		return matrix;
-	}
+	constexpr auto NAME{"数比数独"sv};
 
-	template <bool IsTransposed, size_t M, size_t N>
+	template <bool IsRowMatrix, size_t M, size_t N>
 	void TranslateComparisons(
 		const std::array<std::array<char, N>, M>& matrix,
 		std::vector<std::pair<Position, Position>>& outComparisons)
@@ -30,12 +18,12 @@ namespace
 			for (size_t j{}; j < N; j++)
 			{
 				const Position p1{
-					IsTransposed ? i : j,
-					IsTransposed ? j : i
+					IsRowMatrix ? i : j,
+					IsRowMatrix ? j : i
 				};
 				const Position p2{
-					IsTransposed ? i : j + 1,
-					IsTransposed ? j + 1 : i
+					IsRowMatrix ? i : j + 1,
+					IsRowMatrix ? j + 1 : i
 				};
 				switch (const char c{matrix[i][j]})
 				{
@@ -56,7 +44,7 @@ namespace
 				default:
 					{
 						std::ostringstream os;
-						os << "- 数比数独约束错误：("sv << c << ") 关系未知\n"sv;
+						os << "- "sv << NAME << "约束错误：("sv << c << ") 关系未知\n"sv;
 						std::cerr << os.str();
 						throw std::runtime_error(os.str());
 					}
@@ -68,29 +56,23 @@ namespace
 
 std::string_view ComparisonSudoku::GetName() const
 {
-	return "数比数独"sv;
+	return NAME;
 }
 
-void ComparisonSudoku::InitializeSolver(Solver& solver)
+void ComparisonSudoku::InitializeConstraints()
 {
 	for (auto&& [p1, p2] : Comparisons)
 	{
-		ConstraintType comparisonConstraint1{
-			[p2](const NumType num, const Sudoku& sudoku)
-			{
-				return sudoku(p2.first, p2.second) == 0
-					|| num < sudoku(p2.first, p2.second);
-			}
-		};
-		ConstraintType comparisonConstraint2{
-			[p1](const NumType num, const Sudoku& sudoku)
-			{
-				return sudoku(p1.first, p1.second) == 0
-					|| sudoku(p1.first, p1.second) < num;
-			}
-		};
-		solver.AddConstraint(p1.first, p1.second, comparisonConstraint1);
-		solver.AddConstraint(p2.first, p2.second, comparisonConstraint2);
+		auto [i1, j1]{p1};
+		auto [i2, j2]{p2};
+		AddConstraint(i1, j1, [i2, j2](const Sudoku& sudoku, const NumType num)
+		{
+			return sudoku(i2, j2) == 0 || num < sudoku(i2, j2);
+		});
+		AddConstraint(i2, j2, [i1, j1](const Sudoku& sudoku, const NumType num)
+		{
+			return sudoku(i1, j1) == 0 || sudoku(i1, j1) < num;
+		});
 	}
 }
 
@@ -107,11 +89,11 @@ void ComparisonSudoku::Read(std::istream& in)
 	 *   - 矩阵必定是 9 行 8 列
 	 */
 
-	constexpr size_t m{ 9 };
-	constexpr size_t n{ 8 };
+	constexpr size_t m{9};
+	constexpr size_t n{8};
 
-	const auto rowComparisonMatrix = GetMatrix<char, m, n>(in);
-	const auto colComparisonMatrix = GetMatrix<char, m, n>(in);
+	const auto rowComparisonMatrix = IO::GetMatrix<char, m, n>(in);
+	const auto colComparisonMatrix = IO::GetMatrix<char, m, n>(in);
 
 	TranslateComparisons<true>(rowComparisonMatrix, Comparisons);
 	TranslateComparisons<false>(colComparisonMatrix, Comparisons);

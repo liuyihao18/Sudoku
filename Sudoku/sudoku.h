@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "constant.h"
 
 class Solver;
@@ -14,7 +14,13 @@ public:
 	Sudoku& operator=(Sudoku&&) = default;
 
 	[[nodiscard]] virtual std::string_view GetName() const;
-	virtual void InitializeSolver(Solver& solver);
+	virtual void InitializeConstraints();
+
+	[[nodiscard]] std::vector<Position> GetSpaces() const;
+
+	template <typename Func>
+	void AddConstraint(size_t i, size_t j, Func&& func);
+	[[nodiscard]] bool SatisfyConstraints(size_t i, size_t j, NumType num) const;
 
 	virtual void Read(std::istream& in);
 	virtual void Print(std::ostream& out) const;
@@ -53,6 +59,8 @@ private:
 	std::array<Bitmap, ROW_SIZE> RowNumbers{};
 	std::array<Bitmap, COL_SIZE> ColNumbers{};
 	std::array<Bitmap, SQUARE_ROW_SIZE * SQUARE_COL_SIZE> SquareNumbers{};
+
+	ConstraintsType ExtraConstraints{};
 
 	[[nodiscard]] bool RowHasNum(const size_t i, const size_t, const NumType num) const
 	{
@@ -99,3 +107,9 @@ private:
 		SquareNumbers[SquareK(i, j)] &= ~(1 << Board[K(i, j)]);
 	}
 };
+
+template <typename Func>
+void Sudoku::AddConstraint(const size_t i, const size_t j, Func&& func)
+{
+	ExtraConstraints[K(i, j)].emplace_back(std::forward<Func>(func));
+}
